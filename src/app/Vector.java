@@ -66,4 +66,9 @@ public class Vector {
     double dir() {
         return Math.atan2(this.yvalue, this.xvalue);
     }
+
+    void setValues(double xvalue, double yvalue) {
+        this.xvalue = xvalue;
+        this.yvalue = yvalue;
+    }
 }

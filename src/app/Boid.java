@@ -9,8 +9,7 @@ public class Boid {
     Vector velocity;
     Vector acceleration;
 
-    static double maxForce = 0.2;
-    static double maxSpeed = 4;
+    static int fieldOfView = 120;
 
     static int size = 3;
     static Path2D shape = new Path2D.Double();
@@ -21,7 +20,15 @@ public class Boid {
         shape.closePath();
     }
     
+    static boolean hasInfected = false;
+    Color healthStatus = Color.WHITE;
+    double immunity = (int)(Math.random()*10+1);
+
     public Boid() {
+        if(!hasInfected) {
+            healthStatus = Color.RED;
+            hasInfected = true;
+        }
         this.position = new Vector((double)(Math.random()*BoidRunner.WIDTH),(double)(Math.random()*BoidRunner.HEIGHT));
         double angle = Math.random()*360;
         double radius = Math.random()*2+2; //2-4
@@ -38,6 +45,13 @@ public class Boid {
             if(boid != this && dist < perceptionRadius) {
                 steering.add(boid.velocity);
                 total++;
+                //!Viral transmission
+                if(this.healthStatus == Color.RED) {
+                    if(boid.immunity <= 0)
+                        boid.healthStatus = Color.RED;
+                    else
+                        boid.immunity -= (int)(1/dist);
+                }
             }
         }
         if(total > 0) {
@@ -82,6 +96,19 @@ public class Boid {
                 if(dist == 0.0) dist += 0.001;
                 difference.divide(dist*dist); //or *1/x; inverselly proportional
                 steering.add(difference);
+                /*!Field of View
+                double angleDifference = boid.acceleration.dir() - this.acceleration.dir();
+                if(Math.abs(angleDifference) <= fieldOfView/2) {
+                    Vector FOV = new Vector(this.position.xvalue, this.position.yvalue);
+                    FOV.subtract(boid.position);
+                    if(angleDifference >= 0)  //comparing boid is smaller angle than this; add degrees
+                        FOV.setValues(Math.sin(90+this.acceleration.dir()), Math.cos(90+this.acceleration.dir()));
+                    else
+                        FOV.setValues(Math.sin(this.acceleration.dir()-90), Math.cos(this.acceleration.dir()-90));
+                    FOV.setMagnitude(1/(dist*dist));
+                    //FOV.divide(dist*dist);
+                    steering.add(FOV);*/
+                //}
                 total++;
             }
         }
@@ -128,21 +155,11 @@ public class Boid {
         return Math.sqrt(Math.pow((x2-x1), 2) + Math.pow((y2-y1), 2));
     }
 
-    /*public void drawOld(Graphics2D g) {
-        //g.setColor(Color.WHITE);
-        //g.fillOval((int)this.position.getXValue(),(int)this.position.getYValue(), 15, 15);
-        g.translate((int)this.position.xvalue, (int)this.position.yvalue);
-        g.rotate(this.velocity.dir() + Math.PI/2);
-        g.setColor(Color.WHITE);
-        g.fill(shape);
-        g.draw(shape);
-    }*/
-
     public void draw(Graphics2D g) {
         AffineTransform save = g.getTransform();
         g.translate((int)this.position.xvalue, (int)this.position.yvalue);
         g.rotate(this.velocity.dir() + Math.PI/2);
-        g.setColor(Color.WHITE);
+        g.setColor(healthStatus);
         g.fill(shape);
         g.draw(shape);
         g.setTransform(save);
@@ -150,8 +167,11 @@ public class Boid {
 
     //!MODIFICATIONS///////////////////////////////
 
+    static double maxForce = 0.2;
+    static double maxSpeed = 4;
+
     static final double speedChangeValue = 10; //0.1
-    static final double forceChangeValue = 5; //0.05
+    static final double forceChangeValue = 1; //0.05
     static final double perceptionRadiusChangeValue = 100; //1
 
     static double alignmentPerceptionRadius = 50;
@@ -160,7 +180,7 @@ public class Boid {
     static double cohesionPerceptionRadius = 100;
     static double cohesionMaxSpeed = maxSpeed;
     static double cohesionMaxForce = maxForce;
-    static double separationPerceptionRadius = 100;
+    static double separationPerceptionRadius = 25;
     static double separationMaxSpeed = maxSpeed;
     static double separationMaxForce = maxForce;
 

@@ -22,7 +22,7 @@ public class BoidRunner extends JPanel implements KeyListener {
         for(int i = 0; i < 500; i++)
             flock.add(new Boid());
 
-        //music = new Music();
+        //music = new Music(); //uncomment this for music!
     }
 
     @Override
@@ -42,7 +42,7 @@ public class BoidRunner extends JPanel implements KeyListener {
                 boid.flock(flock);
                 boid.update();
             }
-            int more = (int)(Math.random()*5);
+            int more = (int)(Math.random()*((flock.size()>=700) ? 100 : 10));
             if(more == 0)
                 flock.add(new Boid());
             this.repaint();
