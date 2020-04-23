@@ -42,13 +42,13 @@ public class BoidRunner extends JPanel implements KeyListener {
                 boid.flock(flock);
                 boid.update();
             }
-            try {
-                Thread.sleep(10);
-            } catch( InterruptedException ex ){}
             int more = (int)(Math.random()*5);
             if(more == 0)
                 flock.add(new Boid());
             this.repaint();
+            try {
+                Thread.sleep(10);
+            } catch( InterruptedException ex ){}
         }
     }
 

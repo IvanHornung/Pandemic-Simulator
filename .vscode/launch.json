@@ -6,7 +6,7 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Debug (Launch)-BoidDriver<Flocking>",
+            "name": "BoidDriver<Flocking>",
             "request": "launch",
             "mainClass": "app.BoidDriver",
             "projectName": "Flocking"
