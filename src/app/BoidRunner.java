@@ -1,5 +1,4 @@
 package app;
-  
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,10 +24,10 @@ public class BoidRunner extends JPanel implements KeyListener {
         
         createLabels();
 
-        for(int i = 0; i < 1000; i++)
+        for(int i = 0; i < 850; i++)
             flock.add(new Boid());
 
-        music = new Sound("plague.wav");
+        //music = new Sound("plague.wav");
         //music = new Sound("ambience.wav"); //uncomment this for music!
     }
 
@@ -117,7 +116,7 @@ public class BoidRunner extends JPanel implements KeyListener {
     static void updateInfected() {
         totalInfected++;
         infectedDisplay.setText(" Infected: " + totalInfected);
-        new Sound("newpatient.wav");
+        //new Sound("newpatient.wav");
     }
 
     static void updateDead() {

@@ -23,7 +23,8 @@ public class Boid {
     static boolean hasInfected = false;
     boolean hasDisease = false;
     Color healthStatus = Color.WHITE;
-    double immunity = (Math.random()*10+1);
+    double immunity = (Math.random()*20+10);
+    double immunityCap = immunity;
     double lifeSpan = (Math.random()*30);
     static int mortalityRate = 14;
 
@@ -71,8 +72,12 @@ public class Boid {
                         flock.get(i).hasDisease = true;
                     }
                     else
-                        flock.get(i).immunity -= (int)(1/dist);
-                    }
+                        flock.get(i).immunity -= (1/dist); //.
+                } else if(!this.hasDisease && !flock.get(i).hasDisease && flock.get(i).immunity < flock.get(i).immunityCap) {
+                    flock.get(i).immunity += (Math.random()*5+1)/((BoidRunner.totalInfected > 300) ? 10000 : 1000);
+                    if(flock.get(i).immunity > flock.get(i).immunityCap)
+                       flock.get(i).immunity = flock.get(i).immunityCap;
+                }
             }
             }
         if(total > 0) {
