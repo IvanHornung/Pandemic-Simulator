@@ -28,7 +28,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
 
         createLabels();
 
-        for(int i = 0; i < 1000; i++)
+        for(int i = 0; i < 1200; i++)
             flock.add(new Boid());
 
         music = new Sound("plague.wav");
@@ -205,6 +205,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
     public void mousePressed(MouseEvent event) {
         mouseXPosition = event.getX();   
         mouseYPosition = event.getY();
+        addedNewBoid = true;
     }
 
     //required for compiling; do not use

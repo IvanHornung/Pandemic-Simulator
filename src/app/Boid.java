@@ -1,5 +1,5 @@
 package app;
- 
+  
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -80,8 +80,8 @@ public class Boid {
                         BoidRunner.updateInfected();
                         flock.get(i).hasDisease = true;
                     }
-                    else
-                        flock.get(i).immunity -= (1/dist)*((BoidRunner.totalInfected > 3) ? 1 : 3); //.
+                    else 
+                        flock.get(i).immunity -= (1/dist)*((BoidRunner.totalInfected > 11) ? 1 : 3.5); //.
                 } else if(!this.hasDisease && !flock.get(i).hasDisease && flock.get(i).immunity < flock.get(i).immunityCap) {
                     flock.get(i).immunity += (Math.random()*5+1)/((BoidRunner.totalInfected > 35) ? 10000 : 100);
                     if(flock.get(i).immunity > flock.get(i).immunityCap)
