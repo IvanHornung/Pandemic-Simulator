@@ -29,7 +29,7 @@ public class Boid {
 
     public Boid() {
         if(!hasInfected) {
-            healthStatus = Color.GREEN.darker();
+            healthStatus = Color.RED;
             hasInfected = true;
             hasDisease = true;
         }
@@ -44,21 +44,19 @@ public class Boid {
         int perceptionRadius = (int)alignmentPerceptionRadius; //(alignmentPerceptionRadius == 50) ? 50 : (int)alignmentPerceptionRadius;
         int total = 0;
         Vector steering = new Vector(0,0);
-        if(this.healthStatus == Color.GREEN.darker() || this.healthStatus == Color.RED) {
-            if(this.hasDisease) {
+        if(this.healthStatus == Color.RED || this.hasDisease) {
                 lifeSpan--;
                 if(lifeSpan <= 0) { //*death
                     if((int)Math.random()*100 <= 14) {
-                        hasDisease = false;
+                        //hasDisease = false;
                     } else {
-                        flock.remove(this);
-                        BoidRunner.deathCount++;
+                        //flock.remove(this);
+                        //BoidRunner.deathCount++;
                     }
                 } else if(lifeSpan <= 10) {
-                    BoidRunner.updateCritical();
-                    this.healthStatus = Color.RED;
+                    //BoidRunner.updateCritical();
+                    //this.healthStatus = Color.RED;
                 }
-            }
         }
         for(int i = 0; i < flock.size(); i++) {
             double dist = distance(this.position.xvalue, this.position.yvalue, flock.get(i).position.xvalue, flock.get(i).position.yvalue);
@@ -68,7 +66,7 @@ public class Boid {
                 //!Viral transmission
                 if(this.hasDisease && !flock.get(i).hasDisease) {
                     if(flock.get(i).immunity <= 0) {
-                        flock.get(i).healthStatus = Color.GREEN.darker();
+                        flock.get(i).healthStatus = Color.RED;
                         BoidRunner.updateInfected();
                         flock.get(i).hasDisease = true;
                     }

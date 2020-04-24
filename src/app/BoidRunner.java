@@ -53,7 +53,7 @@ public class BoidRunner extends JPanel implements KeyListener {
                 flock.add(new Boid());
 
             updateHealthy();
-            updateAlive();
+            //updateAlive();
             this.repaint();
             try {
                 Thread.sleep(10);
@@ -66,7 +66,7 @@ public class BoidRunner extends JPanel implements KeyListener {
         this.setLayout(new FlowLayout());
         this.add(healthyDisplay);
         healthyDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
-        healthyDisplay.setForeground(Color.YELLOW);
+        healthyDisplay.setForeground(Color.GREEN);
         healthyDisplay.setVisible(true);
         healthyDisplay.setLocation((int)WIDTH/2-400, 200);
         //Infected
@@ -74,10 +74,10 @@ public class BoidRunner extends JPanel implements KeyListener {
         this.setLayout(new FlowLayout());
         this.add(infectedDisplay);
         infectedDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
-        infectedDisplay.setForeground(Color.GREEN.darker());
+        infectedDisplay.setForeground(Color.RED);
         infectedDisplay.setVisible(true);
         infectedDisplay.setLocation((int)WIDTH/2, 200);
-        //Critical
+        /*/Critical
         criticalDisplay = new JLabel("|Critical: "+ criticalCount);
         this.setLayout(new FlowLayout());
         this.add(criticalDisplay);
@@ -100,22 +100,27 @@ public class BoidRunner extends JPanel implements KeyListener {
         deathDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
         deathDisplay.setForeground(Color.WHITE);
         deathDisplay.setVisible(true);
-        deathDisplay.setLocation((int)WIDTH/2+200, 300);
+        deathDisplay.setLocation((int)WIDTH/2+200, 300);*/
+    }
+
+    static void toggleCounts(boolean setting) {
+        healthyDisplay.setVisible(setting);
+        infectedDisplay.setVisible(setting);
+    }
+
+    static void updateHealthy() {
+        healthyCount = flock.size()-totalInfected;//-deathCount;
+        healthyDisplay.setText("Healthy: " + healthyCount);
     }
 
     static void updateInfected() {
         totalInfected++;
-        infectedDisplay.setText("|Infected: " + totalInfected);
+        infectedDisplay.setText(" Infected: " + totalInfected);
     }
 
     static void updateDead() {
         deathCount++;
         deathDisplay.setText("|Dead: " + deathCount);
-    }
-
-    static void updateHealthy() {
-        healthyCount = flock.size()-totalInfected-deathCount;
-        healthyDisplay.setText("|Healthy: " + healthyCount);
     }
 
     static void updateCritical() {
@@ -180,6 +185,10 @@ public class BoidRunner extends JPanel implements KeyListener {
             Boid.incrementSeparationMaxForce();
         if(event.getKeyCode() == KeyEvent.VK_SEMICOLON)
             Boid.decrementSeparationMaxForce();
+        if(event.getKeyCode() == KeyEvent.VK_Q)
+            toggleCounts(true);
+        if(event.getKeyCode() == KeyEvent.VK_E)
+            toggleCounts(false);
     }
     public void keyTyped(KeyEvent event) {}
 }
