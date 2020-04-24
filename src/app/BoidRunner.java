@@ -12,7 +12,7 @@ public class BoidRunner extends JPanel implements KeyListener {
     static int totalInfected = 1;
     static int deathCount = 0;
 
-    static JLabel infectedDisplay;
+    static JLabel infectedDisplay, deathDisplay;
     private Music music;
 
     public BoidRunner() {
@@ -59,18 +59,32 @@ public class BoidRunner extends JPanel implements KeyListener {
         }
     }
     void createLabels() {
+        //Infected
         infectedDisplay = new JLabel("Infected: "+ totalInfected);
         this.setLayout(new FlowLayout());
         this.add(infectedDisplay);
         infectedDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
-        infectedDisplay.setForeground(Color.RED);
+        infectedDisplay.setForeground(Color.GREEN.darker());
         infectedDisplay.setVisible(true);
-        infectedDisplay.setLocation((int)WIDTH/2, 200);
+        infectedDisplay.setLocation((int)WIDTH/2-200, 200);
+        //Death
+        deathDisplay = new JLabel("Dead: "+ deathCount);
+        this.setLayout(new FlowLayout());
+        this.add(deathDisplay);
+        deathDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
+        deathDisplay.setForeground(Color.WHITE);
+        deathDisplay.setVisible(true);
+        deathDisplay.setLocation((int)WIDTH/2+200, 200);
     }
 
     static void updateInfected() {
         totalInfected++;
         infectedDisplay.setText("Infected: " + totalInfected);
+    }
+
+    static void updateDead() {
+        deathCount++;
+        infectedDisplay.setText("Dead: " + deathCount);
     }
 
 

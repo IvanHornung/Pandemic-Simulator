@@ -21,7 +21,7 @@ public class Boid {
     }
     
     static boolean hasInfected = false;
-    boolean critical = false;
+    boolean hasDisease = false;
     Color healthStatus = Color.WHITE;
     double immunity = (Math.random()*10+1);
     double lifeSpan = (Math.random()*150);
@@ -43,27 +43,33 @@ public class Boid {
         int perceptionRadius = (int)alignmentPerceptionRadius; //(alignmentPerceptionRadius == 50) ? 50 : (int)alignmentPerceptionRadius;
         int total = 0;
         Vector steering = new Vector(0,0);
-        for(Boid boid : flock) {
-            double dist = distance(this.position.xvalue, this.position.yvalue, boid.position.xvalue, boid.position.yvalue);
-            if(boid != this && dist < perceptionRadius) {
-                steering.add(boid.velocity);
+        if(this.healthStatus == Color.GREEN.darker() || this.healthStatus == Color.RED) {
+            if(this.hasDisease) {
+                lifeSpan--;
+                if(lifeSpan <= 0) { //*death
+                    if((int)Math.random()*100 <= 14) {
+                        hasDisease = false;
+                    } else {
+                        flock.remove(this);
+                        BoidRunner.deathCount++;
+                    }
+                } else if(lifeSpan <= 10) 
+                    flock.get(i).healthStatus = Color.RED;
+            }
+        for(int i = 0; i < flock.size(); i++) {
+            double dist = distance(this.position.xvalue, this.position.yvalue, flock.get(i).position.xvalue, flock.get(i).position.yvalue);
+            if(flock.get(i) != this && dist < perceptionRadius) {
+                steering.add(flock.get(i).velocity);
                 total++;
                 //!Viral transmission
-                if(this.healthStatus == Color.RED) {
-                    if(critical) {
-                        lifeSpan--;
-                        if(lifeSpan <= 0) { //*death
-                            //flock.remove(boid);
-                            BoidRunner.deathCount++;
-                        }
-                    }
-                    else if(boid.immunity <= 0) {
-                        boid.healthStatus = Color.RED;
+                
+                    if(flock.get(i).immunity <= 0) {
+                        flock.get(i).healthStatus = Color.GREEN.darker();
                         BoidRunner.updateInfected();
-                        critical = true;
+                        flock.get(i).hasDisease = true;
                     }
                     else
-                        boid.immunity -= (int)(1/dist);
+                        flock.get(i).immunity -= (int)(1/dist);
                 }
             }
         }
