@@ -137,9 +137,9 @@ public class Boid {
         }
         if(total > 0) {
             steering.divide((double)total);
-            steering.setMagnitude(((separationMaxSpeed != maxSpeed) ? separationMaxSpeed : maxSpeed));
+            steering.setMagnitude(((total > 40) ? separationMaxSpeed*2 : separationMaxSpeed));
             steering.subtract(this.velocity);
-            steering.limit(((separationMaxForce != maxForce) ? separationMaxForce : maxForce));
+            steering.limit(((total > 40) ? separationMaxForce*2 : separationMaxForce));
         }
         return steering;
     }
