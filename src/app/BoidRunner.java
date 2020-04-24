@@ -5,7 +5,7 @@ import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
 
-public class BoidRunner extends JPanel implements KeyListener {
+public class BoidRunner extends JPanel implements KeyListener, MouseListener, MouseMotionListener  {
     public static final int WIDTH = 1920;
     public static final int HEIGHT = 1080;
     static ArrayList<Boid> flock = new ArrayList<Boid>();
@@ -13,6 +13,9 @@ public class BoidRunner extends JPanel implements KeyListener {
 
     static JLabel infectedDisplay, deathDisplay, healthyDisplay, criticalDisplay, aliveDisplay;
     private Sound music;
+    
+    public boolean addedNewBoid = false;
+    int mouseXPosition = (int)(WIDTH/2), mouseYPosition = (int)(HEIGHT/2);
 
     public BoidRunner() {
         this.setLayout(null);
@@ -21,13 +24,14 @@ public class BoidRunner extends JPanel implements KeyListener {
         this.setFocusable(true);
 
         this.addKeyListener(this);
-        
+        this.addMouseListener(this);
+
         createLabels();
 
-        for(int i = 0; i < 850; i++)
+        for(int i = 0; i < 1000; i++)
             flock.add(new Boid());
 
-        //music = new Sound("plague.wav");
+        music = new Sound("plague.wav");
         //music = new Sound("ambience.wav"); //uncomment this for music!
     }
 
@@ -51,7 +55,10 @@ public class BoidRunner extends JPanel implements KeyListener {
             int more = (int)(Math.random()*((flock.size()>=900) ? 1000 : 500));
             if(more == 0)
                 flock.add(new Boid());
-
+            if(addedNewBoid) {
+                flock.add(new Boid(mouseXPosition, mouseYPosition));
+                addedNewBoid = false;
+            }   
             updateHealthy();
             //updateAlive();
             this.repaint();
@@ -60,6 +67,7 @@ public class BoidRunner extends JPanel implements KeyListener {
             } catch( InterruptedException ex ){}
         }
     }
+
     void createLabels() {
         //Healthy
         healthyDisplay = new JLabel("Healthy: "+ healthyCount);
@@ -116,7 +124,7 @@ public class BoidRunner extends JPanel implements KeyListener {
     static void updateInfected() {
         totalInfected++;
         infectedDisplay.setText(" Infected: " + totalInfected);
-        //new Sound("newpatient.wav");
+        new Sound("newpatient.wav");
     }
 
     static void updateDead() {
@@ -146,7 +154,7 @@ public class BoidRunner extends JPanel implements KeyListener {
             Boid.incrementMaxForce();
         if(event.getKeyCode() == KeyEvent.VK_A)
             Boid.decrementMaxForce();
-        
+
         //!Alignment
         if(event.getKeyCode()==KeyEvent.VK_W) 
             Boid.incremementAlignmentPerceptionRadius();
@@ -191,5 +199,25 @@ public class BoidRunner extends JPanel implements KeyListener {
         if(event.getKeyCode() == KeyEvent.VK_E)
             toggleCounts(false);
     }
+
     public void keyTyped(KeyEvent event) {}
+
+    public void mousePressed(MouseEvent event) {
+        mouseXPosition = event.getX();   
+        mouseYPosition = event.getY();
+    }
+
+    //required for compiling; do not use
+    public void mouseClicked( MouseEvent event ) {}
+
+    public void mouseReleased( MouseEvent event ) {}
+
+    public void mouseEntered( MouseEvent event ) {}
+
+    public void mouseExited( MouseEvent event ) {}
+    // MouseMotionListener: constantly update whenever mouse is moved
+    public void mouseMoved(MouseEvent event) {}
+
+    public void mouseDragged(MouseEvent event) {}
 }
+

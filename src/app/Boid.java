@@ -1,4 +1,5 @@
 package app;
+ 
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class Boid {
     static boolean hasInfected = false;
     boolean hasDisease = false;
     Color healthStatus = Color.WHITE;
-    double immunity = (Math.random()*20+10);
+    double immunity = (Math.random()*10+5);
     double immunityCap = immunity;
     double lifeSpan = (Math.random()*30);
     static int mortalityRate = 14;
@@ -35,6 +36,14 @@ public class Boid {
             hasDisease = true;
         }
         this.position = new Vector((double)(Math.random()*BoidRunner.WIDTH),(double)(Math.random()*BoidRunner.HEIGHT));
+        double angle = Math.random()*360;
+        double radius = Math.random()*2+2; //2-4
+        this.velocity = new Vector((radius * Math.cos(angle)), (radius * Math.sin(angle)));
+        this.acceleration = new Vector(0,0);
+    }
+    
+    public Boid(int mouseXPosition, int mouseYPosition) {
+        this.position = new Vector(mouseXPosition, mouseYPosition);
         double angle = Math.random()*360;
         double radius = Math.random()*2+2; //2-4
         this.velocity = new Vector((radius * Math.cos(angle)), (radius * Math.sin(angle)));
@@ -72,9 +81,9 @@ public class Boid {
                         flock.get(i).hasDisease = true;
                     }
                     else
-                        flock.get(i).immunity -= (1/dist); //.
+                        flock.get(i).immunity -= (1/dist)*((BoidRunner.totalInfected > 3) ? 1 : 3); //.
                 } else if(!this.hasDisease && !flock.get(i).hasDisease && flock.get(i).immunity < flock.get(i).immunityCap) {
-                    flock.get(i).immunity += (Math.random()*5+1)/((BoidRunner.totalInfected > 300) ? 10000 : 1000);
+                    flock.get(i).immunity += (Math.random()*5+1)/((BoidRunner.totalInfected > 35) ? 10000 : 100);
                     if(flock.get(i).immunity > flock.get(i).immunityCap)
                        flock.get(i).immunity = flock.get(i).immunityCap;
                 }
