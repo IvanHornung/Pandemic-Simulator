@@ -9,6 +9,10 @@ public class BoidRunner extends JPanel implements KeyListener {
     public static final int WIDTH = 1920;
     public static final int HEIGHT = 1080;
     ArrayList<Boid> flock = new ArrayList<Boid>();
+    static int totalInfected = 1;
+    static int deathCount = 0;
+
+    static JLabel infectedDisplay;
     private Music music;
 
     public BoidRunner() {
@@ -19,9 +23,12 @@ public class BoidRunner extends JPanel implements KeyListener {
 
         this.addKeyListener(this);
         
+        createLabels();
+
         for(int i = 0; i < 500; i++)
             flock.add(new Boid());
 
+        
         //music = new Music(); //uncomment this for music!
     }
 
@@ -51,15 +58,19 @@ public class BoidRunner extends JPanel implements KeyListener {
             } catch( InterruptedException ex ){}
         }
     }
-
-    void labelConfigure(JLabel label) {
-        //labelConfigure(new JLabel("(" + boid.position.getXValue() + ", " + boid.position.getYValue() +")"));
+    void createLabels() {
+        infectedDisplay = new JLabel("Infected: "+ totalInfected);
         this.setLayout(new FlowLayout());
-        this.add(label);
-        label.setFont(new Font("Courier New", Font.PLAIN, 20));
-        label.setForeground(Color.WHITE);
-        label.setVisible(true);
-        label.setVisible(false);
+        this.add(infectedDisplay);
+        infectedDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
+        infectedDisplay.setForeground(Color.RED);
+        infectedDisplay.setVisible(true);
+        infectedDisplay.setLocation((int)WIDTH/2, 200);
+    }
+
+    static void updateInfected() {
+        totalInfected++;
+        infectedDisplay.setText("Infected: " + totalInfected);
     }
 
 

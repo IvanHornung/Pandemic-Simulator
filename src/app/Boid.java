@@ -21,8 +21,11 @@ public class Boid {
     }
     
     static boolean hasInfected = false;
+    boolean critical = false;
     Color healthStatus = Color.WHITE;
-    double immunity = (int)(Math.random()*10+1);
+    double immunity = (Math.random()*10+1);
+    double lifeSpan = (Math.random()*150);
+    static int mortalityRate = 14;
 
     public Boid() {
         if(!hasInfected) {
@@ -47,8 +50,18 @@ public class Boid {
                 total++;
                 //!Viral transmission
                 if(this.healthStatus == Color.RED) {
-                    if(boid.immunity <= 0)
+                    if(critical) {
+                        lifeSpan--;
+                        if(lifeSpan <= 0) { //*death
+                            //flock.remove(boid);
+                            BoidRunner.deathCount++;
+                        }
+                    }
+                    else if(boid.immunity <= 0) {
                         boid.healthStatus = Color.RED;
+                        BoidRunner.updateInfected();
+                        critical = true;
+                    }
                     else
                         boid.immunity -= (int)(1/dist);
                 }
@@ -168,7 +181,7 @@ public class Boid {
     //!MODIFICATIONS///////////////////////////////
 
     static double maxForce = 0.2;
-    static double maxSpeed = 4;
+    static double maxSpeed = 2;
 
     static final double speedChangeValue = 10; //0.1
     static final double forceChangeValue = 1; //0.05
@@ -180,7 +193,7 @@ public class Boid {
     static double cohesionPerceptionRadius = 100;
     static double cohesionMaxSpeed = maxSpeed;
     static double cohesionMaxForce = maxForce;
-    static double separationPerceptionRadius = 25;
+    static double separationPerceptionRadius = 100;
     static double separationMaxSpeed = maxSpeed;
     static double separationMaxForce = maxForce;
 
