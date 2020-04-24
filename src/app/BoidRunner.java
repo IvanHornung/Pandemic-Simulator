@@ -12,7 +12,7 @@ public class BoidRunner extends JPanel implements KeyListener {
     static int totalInfected = 1, deathCount = 0, healthyCount = 0, criticalCount = 0, aliveCount;
 
     static JLabel infectedDisplay, deathDisplay, healthyDisplay, criticalDisplay, aliveDisplay;
-    private Music music;
+    private Sound music;
 
     public BoidRunner() {
         this.setLayout(null);
@@ -27,8 +27,8 @@ public class BoidRunner extends JPanel implements KeyListener {
         for(int i = 0; i < 650; i++)
             flock.add(new Boid());
 
-        
-        //music = new Music(); //uncomment this for music!
+        //music = new Sound("plague.wav");
+        //music = new Sound("ambience.wav"); //uncomment this for music!
     }
 
     @Override
@@ -116,6 +116,7 @@ public class BoidRunner extends JPanel implements KeyListener {
     static void updateInfected() {
         totalInfected++;
         infectedDisplay.setText(" Infected: " + totalInfected);
+        new Sound("newpatient.wav");
     }
 
     static void updateDead() {
