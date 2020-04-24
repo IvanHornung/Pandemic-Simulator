@@ -24,13 +24,14 @@ public class Boid {
     boolean hasDisease = false;
     Color healthStatus = Color.WHITE;
     double immunity = (Math.random()*10+1);
-    double lifeSpan = (Math.random()*150);
+    double lifeSpan = (Math.random()*30);
     static int mortalityRate = 14;
 
     public Boid() {
         if(!hasInfected) {
-            healthStatus = Color.RED;
+            healthStatus = Color.GREEN.darker();
             hasInfected = true;
+            hasDisease = true;
         }
         this.position = new Vector((double)(Math.random()*BoidRunner.WIDTH),(double)(Math.random()*BoidRunner.HEIGHT));
         double angle = Math.random()*360;
@@ -53,16 +54,19 @@ public class Boid {
                         flock.remove(this);
                         BoidRunner.deathCount++;
                     }
-                } else if(lifeSpan <= 10) 
-                    flock.get(i).healthStatus = Color.RED;
+                } else if(lifeSpan <= 10) {
+                    BoidRunner.updateCritical();
+                    this.healthStatus = Color.RED;
+                }
             }
+        }
         for(int i = 0; i < flock.size(); i++) {
             double dist = distance(this.position.xvalue, this.position.yvalue, flock.get(i).position.xvalue, flock.get(i).position.yvalue);
             if(flock.get(i) != this && dist < perceptionRadius) {
                 steering.add(flock.get(i).velocity);
                 total++;
                 //!Viral transmission
-                
+                if(this.hasDisease && !flock.get(i).hasDisease) {
                     if(flock.get(i).immunity <= 0) {
                         flock.get(i).healthStatus = Color.GREEN.darker();
                         BoidRunner.updateInfected();
@@ -70,9 +74,9 @@ public class Boid {
                     }
                     else
                         flock.get(i).immunity -= (int)(1/dist);
-                }
+                    }
             }
-        }
+            }
         if(total > 0) {
             steering.divide((double)total);
             steering.setMagnitude(((alignmentMaxSpeed != maxSpeed) ? alignmentMaxSpeed : maxSpeed));

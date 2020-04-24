@@ -8,11 +8,10 @@ import java.awt.event.*;
 public class BoidRunner extends JPanel implements KeyListener {
     public static final int WIDTH = 1920;
     public static final int HEIGHT = 1080;
-    ArrayList<Boid> flock = new ArrayList<Boid>();
-    static int totalInfected = 1;
-    static int deathCount = 0;
+    static ArrayList<Boid> flock = new ArrayList<Boid>();
+    static int totalInfected = 1, deathCount = 0, healthyCount = 0, criticalCount = 0, aliveCount;
 
-    static JLabel infectedDisplay, deathDisplay;
+    static JLabel infectedDisplay, deathDisplay, healthyDisplay, criticalDisplay, aliveDisplay;
     private Music music;
 
     public BoidRunner() {
@@ -25,7 +24,7 @@ public class BoidRunner extends JPanel implements KeyListener {
         
         createLabels();
 
-        for(int i = 0; i < 500; i++)
+        for(int i = 0; i < 650; i++)
             flock.add(new Boid());
 
         
@@ -49,9 +48,12 @@ public class BoidRunner extends JPanel implements KeyListener {
                 boid.flock(flock);
                 boid.update();
             }
-            int more = (int)(Math.random()*((flock.size()>=700) ? 100 : 10));
+            int more = (int)(Math.random()*((flock.size()>=600) ? 1000 : 500));
             if(more == 0)
                 flock.add(new Boid());
+
+            updateHealthy();
+            updateAlive();
             this.repaint();
             try {
                 Thread.sleep(10);
@@ -59,34 +61,72 @@ public class BoidRunner extends JPanel implements KeyListener {
         }
     }
     void createLabels() {
+        //Healthy
+        healthyDisplay = new JLabel("Healthy: "+ healthyCount);
+        this.setLayout(new FlowLayout());
+        this.add(healthyDisplay);
+        healthyDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
+        healthyDisplay.setForeground(Color.YELLOW);
+        healthyDisplay.setVisible(true);
+        healthyDisplay.setLocation((int)WIDTH/2-400, 200);
         //Infected
-        infectedDisplay = new JLabel("Infected: "+ totalInfected);
+        infectedDisplay = new JLabel("|Infected: "+ totalInfected);
         this.setLayout(new FlowLayout());
         this.add(infectedDisplay);
         infectedDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
         infectedDisplay.setForeground(Color.GREEN.darker());
         infectedDisplay.setVisible(true);
-        infectedDisplay.setLocation((int)WIDTH/2-200, 200);
+        infectedDisplay.setLocation((int)WIDTH/2, 200);
+        //Critical
+        criticalDisplay = new JLabel("|Critical: "+ criticalCount);
+        this.setLayout(new FlowLayout());
+        this.add(criticalDisplay);
+        criticalDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
+        criticalDisplay.setForeground(Color.RED);
+        criticalDisplay.setVisible(true);
+        criticalDisplay.setLocation((int)WIDTH/2+400, 200);
+        //Alive
+        aliveDisplay = new JLabel("|Alive: "+ aliveCount);
+        this.setLayout(new FlowLayout());
+        this.add(aliveDisplay);
+        aliveDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
+        aliveDisplay.setForeground(Color.BLUE.brighter().brighter());
+        aliveDisplay.setVisible(true);
+        aliveDisplay.setLocation((int)WIDTH/2-200, 300);
         //Death
-        deathDisplay = new JLabel("Dead: "+ deathCount);
+        deathDisplay = new JLabel("|Dead: "+ deathCount);
         this.setLayout(new FlowLayout());
         this.add(deathDisplay);
         deathDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
         deathDisplay.setForeground(Color.WHITE);
         deathDisplay.setVisible(true);
-        deathDisplay.setLocation((int)WIDTH/2+200, 200);
+        deathDisplay.setLocation((int)WIDTH/2+200, 300);
     }
 
     static void updateInfected() {
         totalInfected++;
-        infectedDisplay.setText("Infected: " + totalInfected);
+        infectedDisplay.setText("|Infected: " + totalInfected);
     }
 
     static void updateDead() {
         deathCount++;
-        infectedDisplay.setText("Dead: " + deathCount);
+        deathDisplay.setText("|Dead: " + deathCount);
     }
 
+    static void updateHealthy() {
+        healthyCount = flock.size()-totalInfected-deathCount;
+        healthyDisplay.setText("|Healthy: " + healthyCount);
+    }
+
+    static void updateCritical() {
+        criticalCount++;
+        criticalDisplay.setText("|Critical: " + criticalCount);
+    }
+
+    static void updateAlive() {
+        aliveCount = flock.size()-deathCount;
+        aliveDisplay.setText("|Alive: " + aliveCount);
+    }
 
     public void keyReleased( KeyEvent event ) {}
 
