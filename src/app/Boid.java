@@ -155,12 +155,14 @@ public class Boid {
         this.acceleration.add(separation);
     }
 
-    
     void update() {
         if(!this.dead) 
             this.position.add(this.velocity);
         this.velocity.add(this.acceleration);
         this.velocity.limit(maxSpeed);
+        if(this.dead && deathAngle == 0) {
+            deathAngle = this.velocity.dir() + Math.PI/2;
+        }
         //if(this.dead)
         //    this.velocity.set(0,0);
         }
@@ -182,6 +184,7 @@ public class Boid {
     }
 
     boolean deathRotateComplete = false;
+    double spazzTime = Math.random()*10+10;
 
     public void draw(Graphics2D g) {
         AffineTransform save = g.getTransform();
@@ -189,12 +192,17 @@ public class Boid {
         if(!this.dead)
             g.rotate(this.velocity.dir() + Math.PI/2);
         else
-            if(!this.deathRotateComplete) {
-                g.rotate(Math.random()*2*Math.PI);
-                this.deathRotateComplete = true;
-            } else {
-                g.rotate(0);
-            }
+            g.rotate(deathAngle);
+            // if(!this.deathRotateComplete) {
+            //    deathAngle = Math.random()*2*Math.PI;
+            //    g.rotate(deathAngle);
+            //     this.deathRotateComplete = true;
+            // } else if(spazzTime > 0) {
+            //    spazzTime--;
+            //    g.rotate(Math.random()*Math.PI*2);
+            // } else{
+            //     g.rotate(deathAngle);
+            // }
         // else if(this.dead && !this.deathRotateComplete) {
         //      g.rotate(Math.random()*(Math.PI*2));
         //      this.deathRotateComplete = true;
