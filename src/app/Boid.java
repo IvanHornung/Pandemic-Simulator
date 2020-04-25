@@ -37,7 +37,7 @@ public class Boid {
             healthStatus = Color.RED;
             hasInfected = true;
             hasDisease = true;
-            lifeSpan = 1200;
+            lifeSpan = 2000;
         }
         this.position = new Vector((double)(Math.random()*BoidRunner.WIDTH),(double)(Math.random()*BoidRunner.HEIGHT));
         double angle = Math.random()*360;

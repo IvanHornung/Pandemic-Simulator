@@ -47,11 +47,24 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
 
     public void run() {
         while(true) {
-            for(Boid boid : flock){
-                boid.edges();
-                boid.flock(flock);
-                boid.update();
+            int toAdd = 0;
+            for(int i = 0; i < flock.size(); i++){
+                flock.get(i).edges();
+                flock.get(i).flock(flock);
+                flock.get(i).update();
+                if(flock.get(i).dead && (int)(Math.random()*(totalInfected*100+1)) == 0) {
+                    flock.remove(i);
+                    deathCount--;
+                    deathDisplay.setText(" Dead: " + deathCount);
+                    i--; toAdd++;
+                }
             }
+            for(int i = 0; i < toAdd; i++)
+                flock.add(new Boid());
+            /*if(totalInfected == 0) {
+                clean();
+                Boid.hasInfected = false;
+            }*/
             int more = (int)(Math.random()*((flock.size()>=900) ? 1000 : 500));
             if(more == 0)
                 flock.add(new Boid());
@@ -67,6 +80,26 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
             } catch( InterruptedException ex ){}
         }
     }
+
+   /* public void clean() {
+        int toAdd = deathCount;
+        do {
+            for(int i = 0; i < flock.size(); i++) {
+                if(flock.get(i).dead && (int)(Math.random()*100) == 0) {
+                    flock.remove(i);
+                    deathCount--;
+                    deathDisplay.setText(" Dead: " + deathCount);
+                    i--;
+                    this.repaint();
+                    try {
+                        Thread.sleep(30);
+                    } catch(InterruptedException e) {}
+                }
+            }
+        } while(deathCount != 0);
+        for(int i = 0; i < toAdd; i++)
+            flock.add(new Boid());
+    }*/
 
     void createLabels() {
         //Healthy
