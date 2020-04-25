@@ -28,7 +28,7 @@ public class Boid {
     double immunityCap = immunity;
     double lifeSpan = (Math.random()*300+300);
     boolean dead = false;
-    int deathAngle = 0;
+    double deathAngle = 0;
     static int mortalityRate = 14;
 
     public Boid() {
@@ -61,11 +61,10 @@ public class Boid {
         if(this.hasDisease && !this.dead) {
             lifeSpan--;
             if(lifeSpan <= 0) {
-                this.dead = true;
+                this.dead = true; //*death
                 //flock.remove(this);
                 BoidRunner.updateDead();
                 this.healthStatus = Color.YELLOW;
-                deathAngle = (int)(this.velocity.dir()+Math.PI/2);
             }
         }
         for(int i = 0; i < flock.size(); i++) {
@@ -160,6 +159,10 @@ public class Boid {
         this.position.add(this.velocity);
         this.velocity.add(this.acceleration);
         this.velocity.limit(maxSpeed);
+        if(this.dead) {
+            deathAngle = (this.velocity.dir()+Math.PI/2);
+            this.velocity.set(0,0);
+        }
     }
 
     void edges() {
@@ -182,6 +185,8 @@ public class Boid {
         AffineTransform save = g.getTransform();
         g.translate((int)this.position.xvalue, (int)this.position.yvalue);
         g.rotate(this.velocity.dir() + Math.PI/2);
+        if(this.dead)
+            g.rotate(deathAngle);
         g.setColor(healthStatus);
         g.fill(shape);
         g.draw(shape);
