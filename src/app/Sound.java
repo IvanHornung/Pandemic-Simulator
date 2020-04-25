@@ -23,7 +23,7 @@ public class Sound extends JFrame {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
             clip.open(audioIn);
             clip.start();
-            clip.loop((filename.equals("newpatient.wav") || filename.equals("death.wav") ) ? 0 : 10);
+            clip.loop((filename.equals("plague.wav") || filename.equals("ambience.wav") ? 10 : 0));
         } catch (UnsupportedAudioFileException e) {
             e.printStackTrace();
         } catch (IOException e) {

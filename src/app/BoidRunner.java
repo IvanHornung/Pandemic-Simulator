@@ -9,9 +9,9 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
     public static final int WIDTH = 1920;
     public static final int HEIGHT = 1080;
     static ArrayList<Boid> flock = new ArrayList<Boid>();
-    static int totalInfected = 1, deathCount = 0, healthyCount = 0, criticalCount = 0, aliveCount;
+    static int totalInfected = 1, deathCount = 0, healthyCount = 0, criticalCount = 0, aliveCount, recoveryCount = 0;
 
-    static JLabel infectedDisplay, deathDisplay, healthyDisplay, criticalDisplay, aliveDisplay;
+    static JLabel infectedDisplay, deathDisplay, healthyDisplay, criticalDisplay, aliveDisplay, recoveredDisplay;
     private Sound music;
     
     public boolean addedNewBoid = false;
@@ -85,6 +85,14 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         infectedDisplay.setForeground(Color.RED);
         infectedDisplay.setVisible(true);
         infectedDisplay.setLocation((int)WIDTH/2, 200);
+        //Critical
+        recoveredDisplay = new JLabel(" Recovered: "+ criticalCount);
+        this.setLayout(new FlowLayout());
+        this.add(recoveredDisplay);
+        recoveredDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
+        recoveredDisplay.setForeground(new Color(101,194,255));
+        recoveredDisplay.setVisible(true);
+        recoveredDisplay.setLocation((int)WIDTH/2+400, 200);
         /*/Critical
         criticalDisplay = new JLabel("|Critical: "+ criticalCount);
         this.setLayout(new FlowLayout());
@@ -126,6 +134,14 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         healthyCount--;
         infectedDisplay.setText(" Infected: " + totalInfected);
         new Sound("newpatient.wav");
+    }
+
+    static void updateRecovered() {
+        recoveryCount++;
+        totalInfected--;
+        infectedDisplay.setText(" Infected: " + totalInfected);
+        recoveredDisplay.setText(" Recovered: " + recoveryCount);
+        new Sound("recovery.wav");
     }
 
     static void updateDead() {

@@ -30,6 +30,7 @@ public class Boid {
     boolean dead = false;
     double deathAngle = 0;
     static int mortalityRate = 14;
+    static Color RECOVERED = new Color(101,194,255);
 
     public Boid() {
         if(!hasInfected) {
@@ -61,11 +62,18 @@ public class Boid {
         if(this.hasDisease && !this.dead) {
             lifeSpan--;
             if(lifeSpan <= 0) {
-                this.dead = true; //!Death
-                //flock.remove(this);
-                BoidRunner.updateDead();
-                this.healthStatus = Color.YELLOW;
-                //deathAngle = (this.velocity.dir()+Math.PI/2);
+                if((int)(Math.random()*100) <= mortalityRate) {
+                    this.dead = true; //!Death
+                    //flock.remove(this);
+                    BoidRunner.updateDead();
+                    this.healthStatus = Color.YELLOW;
+                } else {
+                    this.hasDisease = false; //!Recovery
+                    BoidRunner.updateRecovered();
+                    this.healthStatus = RECOVERED;
+                    this.immunity = this.immunityCap * (Math.random()*50+100);
+                    this.immunityCap = this.immunity;
+                }
             }
         }
         for(int i = 0; i < flock.size(); i++) {
