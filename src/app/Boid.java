@@ -28,6 +28,7 @@ public class Boid {
     double immunityCap = immunity;
     double lifeSpan = (Math.random()*300+300);
     boolean dead = false;
+    int deathAngle = 0;
     static int mortalityRate = 14;
 
     public Boid() {
@@ -35,6 +36,7 @@ public class Boid {
             healthStatus = Color.RED;
             hasInfected = true;
             hasDisease = true;
+            lifeSpan = 1200;
         }
         this.position = new Vector((double)(Math.random()*BoidRunner.WIDTH),(double)(Math.random()*BoidRunner.HEIGHT));
         double angle = Math.random()*360;
@@ -59,9 +61,11 @@ public class Boid {
         if(this.hasDisease && !this.dead) {
             lifeSpan--;
             if(lifeSpan <= 0) {
-                dead = true;
+                this.dead = true;
                 //flock.remove(this);
                 BoidRunner.updateDead();
+                this.healthStatus = Color.YELLOW;
+                deathAngle = (int)(this.velocity.dir()+Math.PI/2);
             }
         }
         for(int i = 0; i < flock.size(); i++) {

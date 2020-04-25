@@ -133,6 +133,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         totalInfected--;
         infectedDisplay.setText(" Infected: " + totalInfected);
         deathDisplay.setText("|Dead: " + deathCount);
+        new Sound("death.wav");
     }
 
     static void updateCritical() {
