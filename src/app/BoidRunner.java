@@ -129,7 +129,8 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
 
     static void updateDead() {
         deathCount++;
-        deathDisplay.setText("|Dead: " + deathCount);
+        totalInfected--;
+        //deathDisplay.setText("|Dead: " + deathCount);
     }
 
     static void updateCritical() {

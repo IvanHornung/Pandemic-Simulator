@@ -27,6 +27,7 @@ public class Boid {
     double immunity = (Math.random()*10+5);
     double immunityCap = immunity;
     double lifeSpan = (Math.random()*30);
+    boolean dead = false;
     static int mortalityRate = 14;
 
     public Boid() {
@@ -54,19 +55,14 @@ public class Boid {
         int perceptionRadius = (int)alignmentPerceptionRadius; //(alignmentPerceptionRadius == 50) ? 50 : (int)alignmentPerceptionRadius;
         int total = 0;
         Vector steering = new Vector(0,0);
-        if(this.healthStatus == Color.RED || this.hasDisease) {
-                lifeSpan--;
-                if(lifeSpan <= 0) { //*death
-                    if((int)Math.random()*100 <= 14) {
-                        //hasDisease = false;
-                    } else {
-                        //flock.remove(this);
-                        //BoidRunner.deathCount++;
-                    }
-                } else if(lifeSpan <= 10) {
-                    //BoidRunner.updateCritical();
-                    //this.healthStatus = Color.RED;
-                }
+        //!Part 2: Lifespans
+        if(this.hasDisease && !this.dead) {
+            lifeSpan--;
+            if(lifeSpan <= 0) {
+                dead = true;
+                //flock.remove(this);
+                BoidRunner.updateDead();
+            }
         }
         for(int i = 0; i < flock.size(); i++) {
             double dist = distance(this.position.xvalue, this.position.yvalue, flock.get(i).position.xvalue, flock.get(i).position.yvalue);
@@ -131,19 +127,7 @@ public class Boid {
                 if(dist == 0.0) dist += 0.001;
                 difference.divide(dist*dist); //or *1/x; inverselly proportional
                 steering.add(difference);
-                /*!Field of View
-                double angleDifference = boid.acceleration.dir() - this.acceleration.dir();
-                if(Math.abs(angleDifference) <= fieldOfView/2) {
-                    Vector FOV = new Vector(this.position.xvalue, this.position.yvalue);
-                    FOV.subtract(boid.position);
-                    if(angleDifference >= 0)  //comparing boid is smaller angle than this; add degrees
-                        FOV.setValues(Math.sin(90+this.acceleration.dir()), Math.cos(90+this.acceleration.dir()));
-                    else
-                        FOV.setValues(Math.sin(this.acceleration.dir()-90), Math.cos(this.acceleration.dir()-90));
-                    FOV.setMagnitude(1/(dist*dist));
-                    //FOV.divide(dist*dist);
-                    steering.add(FOV);*/
-                //}
+                //Implementing FOV would go here, check Git history to access
                 total++;
             }
         }
