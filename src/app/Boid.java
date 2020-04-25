@@ -26,7 +26,7 @@ public class Boid {
     Color healthStatus = Color.WHITE;
     double immunity = (Math.random()*10+5);
     double immunityCap = immunity;
-    double lifeSpan = (Math.random()*30);
+    double lifeSpan = (Math.random()*300+300);
     boolean dead = false;
     static int mortalityRate = 14;
 

@@ -28,7 +28,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
 
         createLabels();
 
-        for(int i = 0; i < 600; i++) //1200
+        for(int i = 0; i < 1200; i++) //1200
             flock.add(new Boid());
 
         music = new Sound("plague.wav");
@@ -101,14 +101,14 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         aliveDisplay.setForeground(Color.BLUE.brighter().brighter());
         aliveDisplay.setVisible(true);
         aliveDisplay.setLocation((int)WIDTH/2-200, 300);
-        //Death
+        //Death*/
         deathDisplay = new JLabel("|Dead: "+ deathCount);
         this.setLayout(new FlowLayout());
         this.add(deathDisplay);
         deathDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
         deathDisplay.setForeground(Color.WHITE);
         deathDisplay.setVisible(true);
-        deathDisplay.setLocation((int)WIDTH/2+200, 300);*/
+        deathDisplay.setLocation((int)WIDTH/2+200, 300);
     }
 
     static void toggleCounts(boolean setting) {
@@ -117,12 +117,13 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
     }
 
     static void updateHealthy() {
-        healthyCount = flock.size()-totalInfected;//-deathCount;
+        healthyCount = flock.size()-totalInfected-deathCount;
         healthyDisplay.setText("Healthy: " + healthyCount);
     }
 
     static void updateInfected() {
         totalInfected++;
+        healthyCount--;
         infectedDisplay.setText(" Infected: " + totalInfected);
         new Sound("newpatient.wav");
     }
@@ -130,7 +131,8 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
     static void updateDead() {
         deathCount++;
         totalInfected--;
-        //deathDisplay.setText("|Dead: " + deathCount);
+        infectedDisplay.setText(" Infected: " + totalInfected);
+        deathDisplay.setText("|Dead: " + deathCount);
     }
 
     static void updateCritical() {
