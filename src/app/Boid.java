@@ -61,10 +61,11 @@ public class Boid {
         if(this.hasDisease && !this.dead) {
             lifeSpan--;
             if(lifeSpan <= 0) {
-                this.dead = true; //*death
+                this.dead = true; //!Death
                 //flock.remove(this);
                 BoidRunner.updateDead();
                 this.healthStatus = Color.YELLOW;
+                //deathAngle = (this.velocity.dir()+Math.PI/2);
             }
         }
         for(int i = 0; i < flock.size(); i++) {
@@ -79,12 +80,12 @@ public class Boid {
                         BoidRunner.updateInfected();
                         flock.get(i).hasDisease = true;
                     }
-                    else 
+                    else //!Immunity loss
                         flock.get(i).immunity -= (1/dist)*((BoidRunner.totalInfected > 35) ? 1 : ((BoidRunner.totalInfected > 11) ? 2.5 : ((BoidRunner.totalInfected < 5) ? 4.5 : 3.5)));
                 } else if(!this.hasDisease && !flock.get(i).hasDisease && flock.get(i).immunity < flock.get(i).immunityCap) {
                     flock.get(i).immunity += (Math.random()*5+1)/((BoidRunner.totalInfected > 35) ? 10000 : 100);
                     if(flock.get(i).immunity > flock.get(i).immunityCap)
-                       flock.get(i).immunity = flock.get(i).immunityCap;
+                       flock.get(i).immunity = flock.get(i).immunityCap; //!Immunity gain
                 }
             }
             }
@@ -156,14 +157,13 @@ public class Boid {
 
     
     void update() {
-        this.position.add(this.velocity);
+        if(!this.dead) 
+            this.position.add(this.velocity);
         this.velocity.add(this.acceleration);
         this.velocity.limit(maxSpeed);
-        if(this.dead) {
-            deathAngle = (this.velocity.dir()+Math.PI/2);
-            this.velocity.set(0,0);
+        //if(this.dead)
+        //    this.velocity.set(0,0);
         }
-    }
 
     void edges() {
         if(this.position.xvalue > BoidRunner.WIDTH)
@@ -181,12 +181,24 @@ public class Boid {
         return Math.sqrt(Math.pow((x2-x1), 2) + Math.pow((y2-y1), 2));
     }
 
+    boolean deathRotateComplete = false;
+
     public void draw(Graphics2D g) {
         AffineTransform save = g.getTransform();
         g.translate((int)this.position.xvalue, (int)this.position.yvalue);
-        g.rotate(this.velocity.dir() + Math.PI/2);
-        if(this.dead)
-            g.rotate(deathAngle);
+        if(!this.dead)
+            g.rotate(this.velocity.dir() + Math.PI/2);
+        else
+            if(!this.deathRotateComplete) {
+                g.rotate(Math.random()*2*Math.PI);
+                this.deathRotateComplete = true;
+            } else {
+                g.rotate(0);
+            }
+        // else if(this.dead && !this.deathRotateComplete) {
+        //      g.rotate(Math.random()*(Math.PI*2));
+        //      this.deathRotateComplete = true;
+        // }
         g.setColor(healthStatus);
         g.fill(shape);
         g.draw(shape);
@@ -194,7 +206,6 @@ public class Boid {
     }
 
     //!MODIFICATIONS///////////////////////////////
-
     static double maxForce = 0.2;
     static double maxSpeed = 2;
 
