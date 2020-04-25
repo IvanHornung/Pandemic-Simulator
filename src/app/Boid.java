@@ -130,6 +130,9 @@ public class Boid {
                 difference.subtract(boid.position);
                 if(dist == 0.0) dist += 0.001;
                 difference.divide(dist*dist); //or *1/x; inverselly proportional
+                if(boid.dead) {
+                    difference.multiply(Math.random()*5+20);
+                }
                 steering.add(difference);
                 //Implementing FOV would go here, check Git history to access
                 total++;
@@ -163,9 +166,7 @@ public class Boid {
         if(this.dead && deathAngle == 0) {
             deathAngle = this.velocity.dir() + Math.PI/2;
         }
-        //if(this.dead)
-        //    this.velocity.set(0,0);
-        }
+    }
 
     void edges() {
         if(this.position.xvalue > BoidRunner.WIDTH)
@@ -183,9 +184,6 @@ public class Boid {
         return Math.sqrt(Math.pow((x2-x1), 2) + Math.pow((y2-y1), 2));
     }
 
-    boolean deathRotateComplete = false;
-    double spazzTime = Math.random()*10+10;
-
     public void draw(Graphics2D g) {
         AffineTransform save = g.getTransform();
         g.translate((int)this.position.xvalue, (int)this.position.yvalue);
@@ -193,20 +191,6 @@ public class Boid {
             g.rotate(this.velocity.dir() + Math.PI/2);
         else
             g.rotate(deathAngle);
-            // if(!this.deathRotateComplete) {
-            //    deathAngle = Math.random()*2*Math.PI;
-            //    g.rotate(deathAngle);
-            //     this.deathRotateComplete = true;
-            // } else if(spazzTime > 0) {
-            //    spazzTime--;
-            //    g.rotate(Math.random()*Math.PI*2);
-            // } else{
-            //     g.rotate(deathAngle);
-            // }
-        // else if(this.dead && !this.deathRotateComplete) {
-        //      g.rotate(Math.random()*(Math.PI*2));
-        //      this.deathRotateComplete = true;
-        // }
         g.setColor(healthStatus);
         g.fill(shape);
         g.draw(shape);
