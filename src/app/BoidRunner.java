@@ -74,7 +74,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         this.setLayout(new FlowLayout());
         this.add(healthyDisplay);
         healthyDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
-        healthyDisplay.setForeground(Color.GREEN);
+        healthyDisplay.setForeground(Color.WHITE);
         healthyDisplay.setVisible(true);
         healthyDisplay.setLocation((int)WIDTH/2-400, 200);
         //Infected
@@ -85,12 +85,12 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         infectedDisplay.setForeground(Color.RED);
         infectedDisplay.setVisible(true);
         infectedDisplay.setLocation((int)WIDTH/2, 200);
-        //Critical
+        //Recovered
         recoveredDisplay = new JLabel(" Recovered: "+ criticalCount);
         this.setLayout(new FlowLayout());
         this.add(recoveredDisplay);
         recoveredDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
-        recoveredDisplay.setForeground(new Color(101,194,255));
+        recoveredDisplay.setForeground(Boid.RECOVERED);
         recoveredDisplay.setVisible(true);
         recoveredDisplay.setLocation((int)WIDTH/2+400, 200);
         /*/Critical
@@ -114,7 +114,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         this.setLayout(new FlowLayout());
         this.add(deathDisplay);
         deathDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
-        deathDisplay.setForeground(Color.WHITE);
+        deathDisplay.setForeground(Boid.DEAD);
         deathDisplay.setVisible(true);
         deathDisplay.setLocation((int)WIDTH/2+200, 300);
     }

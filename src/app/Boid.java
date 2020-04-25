@@ -26,11 +26,11 @@ public class Boid {
     Color healthStatus = Color.WHITE;
     double immunity = (Math.random()*10+5);
     double immunityCap = immunity;
-    double lifeSpan = (Math.random()*300+300);
+    double lifeSpan = (Math.random()*300+500);
     boolean dead = false;
     double deathAngle = 0;
     static int mortalityRate = 14;
-    static Color RECOVERED = new Color(101,194,255);
+    static Color RECOVERED = new Color(101,194,255), DEAD = new Color(154, 74, 178);
 
     public Boid() {
         if(!hasInfected) {
@@ -66,7 +66,7 @@ public class Boid {
                     this.dead = true; //!Death
                     //flock.remove(this);
                     BoidRunner.updateDead();
-                    this.healthStatus = Color.YELLOW;
+                    this.healthStatus = DEAD;
                 } else {
                     this.hasDisease = false; //!Recovery
                     BoidRunner.updateRecovered();
