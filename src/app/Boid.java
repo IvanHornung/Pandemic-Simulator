@@ -36,7 +36,7 @@ public class Boid {
                 PARAMEDIC = Color.BLUE;
     double immunityLife;
     boolean isImmune = false, isParamedic = false;
-    static final int paramedicPerception = 500;
+    static Boid patient; static boolean lockedOn = false;
 
     public Boid() {
         if(!hasInfected) {
@@ -73,10 +73,7 @@ public class Boid {
     }
 
     Vector align(ArrayList<Boid> flock) {
-        int perceptionRadius = (int)((this.isParamedic)?paramedicPerception:cohesionPerceptionRadius);
-        if(this.isParamedic) {
-            perceptionRadius = 500;
-        }
+        int perceptionRadius = (int)(alignmentPerceptionRadius);
         int total = 0;
         Vector steering = new Vector(0,0);
         //!Part 2: Lifespans
@@ -111,17 +108,11 @@ public class Boid {
                 //BoidRunner.lostImmunity();
                 new Sound("immunitylost.wav");
             }
-        }
+        } //!Alignment
         for(int i = 0; i < flock.size(); i++) {
             double dist = distance(this.position.xvalue, this.position.yvalue, flock.get(i).position.xvalue, flock.get(i).position.yvalue);
             if(flock.get(i) != this && dist < perceptionRadius) {
                 steering.add(flock.get(i).velocity);
-                if(this.isParamedic && flock.get(i).hasDisease) {
-                    Vector difference = new Vector(this.position.xvalue, this.position.yvalue);
-                    difference.add(flock.get(i).position);
-                    difference.multiply(300);
-                    steering.add(difference);
-                }
                 total++;
                 //!Viral transmission
                 if(this.hasDisease && !flock.get(i).hasDisease && (!this.isImmune || flock.get(i).dead)) {
@@ -139,7 +130,7 @@ public class Boid {
                         flock.get(i).immunity -= (1/dist)*((BoidRunner.totalInfected > 35) ? 1 : ((BoidRunner.totalInfected > 11) ? 2.5 : ((BoidRunner.totalInfected < 5) ? 4.5 : 3.5)));
                     }
                 } else if(!this.hasDisease && !flock.get(i).hasDisease && flock.get(i).immunity < flock.get(i).immunityCap && !flock.get(i).isImmune) {
-                    flock.get(i).immunity += (Math.random()*5+1)/((BoidRunner.totalInfected > 35) ? 10000 : 100)*((this.isParamedic)?100:1);
+                    flock.get(i).immunity += (Math.random()*5+1)/((BoidRunner.totalInfected > 35) ? 10000 : 100)*((this.isParamedic)?100:1); //!Paramedic work
                     if(flock.get(i).immunity > flock.get(i).immunityCap)
                        flock.get(i).immunity = flock.get(i).immunityCap; //!Immunity gain
                 }
@@ -156,28 +147,25 @@ public class Boid {
     }
 
     Vector cohesion(ArrayList<Boid> flock) {
-        int perceptionRadius = (int)((this.isParamedic)?paramedicPerception:cohesionPerceptionRadius);
+        int perceptionRadius = (int)(cohesionPerceptionRadius);
         int total = 0;
         Vector steering = new Vector(0,0);
-        for(Boid boid : flock) {
-            double dist = distance(this.position.xvalue, this.position.yvalue, boid.position.xvalue, boid.position.yvalue);
-            if(boid != this && dist < perceptionRadius) {
-                steering.add(boid.position);
-                if(this.isParamedic && boid.hasDisease) {
-                    Vector difference = new Vector(this.position.xvalue, this.position.yvalue);
-                    difference.add(boid.position);
-                     difference.multiply(300);
-                    steering.add(difference);
+        if(!this.isParamedic || !lockedOn) 
+            for(Boid boid : flock) {
+                double dist = distance(this.position.xvalue, this.position.yvalue, boid.position.xvalue, boid.position.yvalue);
+                if(boid != this && dist < perceptionRadius) {
+                    steering.add(boid.position);
+                    total++;
                 }
-                total++;
             }
-        }
+        else
+            steering.add(patient.position);
         if(total > 0) {
             steering.divide((double)total);
             steering.subtract(this.position);
             steering.setMagnitude(((cohesionMaxSpeed != maxSpeed) ? cohesionMaxSpeed : maxSpeed));
             steering.subtract(this.velocity);
-            if(!this.isParamedic)
+            if(!this.isParamedic) //check here if teleporting
                 steering.limit(((cohesionMaxForce != maxForce) ? cohesionMaxForce : maxForce));
         }
         return steering;
@@ -196,6 +184,8 @@ public class Boid {
                 difference.divide(dist*dist); //or *1/x; inverselly proportional
                 if(boid.dead || boid.healthStatus == DIAGNOSED) {
                     difference.multiply(Math.random()*5+20);
+                } if(this.isParamedic && boid.hasDisease) {
+                    difference.divide(Math.random()*15+20);
                 }
                 steering.add(difference);
                 //Implementing FOV would go here, check Git history to access
@@ -229,7 +219,12 @@ public class Boid {
         this.velocity.limit(maxSpeed);
         if(this.dead && deathAngle == 0) {
             deathAngle = this.velocity.dir() + Math.PI/2;
-        }
+        } 
+        if(this.isParamedic && BoidRunner.totalInfected == 0) {
+            lockedOn = false;
+        } else
+            if(this.isParamedic)
+                lockedOn = true;
     }
 
     void edges() {
