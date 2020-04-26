@@ -46,7 +46,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         }
     }
 
-    boolean intensityPlayed = false, milestonePlayed = false;
+    boolean intensityPlayed = false, milestonePlayed = false;// decremented = false;
 
     public void run() {
         while(true) {
@@ -72,9 +72,10 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                     visiblyDead++;
                 if(flock.get(i).dead && ((int)(Math.random()*(totalInfected*600+((totalInfected == 0)?1:0))) <= visiblyDead)) {
                     flock.remove(i);
-                    i--; toAdd++;
+                    i--;
+                    toAdd++;
                 }
-                if(flock.get(i).isParamedic && Boid.lockedOn) {
+                else if(flock.get(i).isParamedic && Boid.lockedOn) {
                     flock.get(i).sirenCount++;
                     if(flock.get(i).sirenCount % 3 == 0) {
                         flock.get(i).sirens++;

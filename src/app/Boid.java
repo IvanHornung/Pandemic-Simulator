@@ -138,8 +138,10 @@ public class Boid {
             }
             double dist = distance(this.position.xvalue, this.position.yvalue, flock.get(i).position.xvalue, flock.get(i).position.yvalue);
             if(flock.get(i) != this && dist < perceptionRadius) {
-                steering.add(flock.get(i).velocity);
-                total++;
+                if(!(this.healthStatus == DIAGNOSED && flock.get(i).isParamedic)) {
+                    steering.add(flock.get(i).velocity);
+                    total++;
+                }
                 //!Viral transmission
                 if(this.hasDisease && !flock.get(i).hasDisease && (!this.isImmune || flock.get(i).dead)) {
                     if(flock.get(i).immunity <= 0) {
@@ -212,14 +214,18 @@ public class Boid {
             if(total > 0)
                 steering.divide((double)total);
             else {
+                patientDistance = distance(this.position.xvalue, this.position.yvalue, patient.position.xvalue, patient.position.yvalue);
                 steering.add(patient.position);
             }
             steering.subtract(this.position);
-            if(!(this.isParamedic && lockedOn))
+            //if((this.isParamedic && lockedOn))
                 steering.setMagnitude(((cohesionMaxSpeed != maxSpeed) ? cohesionMaxSpeed : maxSpeed));
             steering.subtract(this.velocity);
-            if(!(this.isParamedic && lockedOn))
-                steering.limit(((cohesionMaxForce != maxForce) ? cohesionMaxForce : maxForce));
+            steering.limit(((this.isParamedic && lockedOn)?cohesionMaxForce*3:(cohesionMaxForce != maxForce) ? cohesionMaxForce : maxForce));
+            //if(this.isParamedic && lockedOn)
+            //    steering.setMagnitude(maxSpeed*3);
+            //else
+            //    steering.multiply(50);
         }
         return steering;
     }
@@ -236,9 +242,9 @@ public class Boid {
                 if(dist == 0.0) dist += 0.001;
                 difference.divide(dist*dist); //or *1/x; inverselly proportional
                 if((boid.dead || (boid.healthStatus == DIAGNOSED && !this.isParamedic) || this.healthStatus == PARANOID || (boid.isParamedic && lockedOn)) && !this.isParamedic){
-                    difference.multiply(Math.random()*5+20);
-                } if(this.isParamedic && lockedOn)
-                    difference.multiply(5);
+                    difference.multiply(Math.random()*5+((boid.isParamedic && lockedOn)?40:20));
+                } if(this.isParamedic && boid.isParamedic)
+                    difference.multiply(10);
                 // } if(this.healthStatus == PARANOID)
                 //     difference.multiply(50);
                 steering.add(difference);
@@ -256,35 +262,38 @@ public class Boid {
     }
 
     void flock(ArrayList<Boid> flock) {
+        boolean emergencyWork = false;
+        if(this.isParamedic && lockedOn)
+            emergencyWork = true;
         this.acceleration.set(0, 0);
         Vector alignment = this.align(flock);
         Vector cohesion = this.cohesion(flock);
+        //if(this.isParamedic && lockedOn)
+        //      cohesion.multiply(10);
         Vector separation = this.separation(flock);
         //Force accumulation:
-        this.acceleration.add(alignment);
-        this.acceleration.add(cohesion);
+        if(!emergencyWork) 
+            this.acceleration.add(alignment);
         this.acceleration.add(separation);
+        
+        //cohesion.multiply(emergencyWork?3:1);
+        this.acceleration.add(cohesion);
     }
+    double patientDistance;
 
     void update() {
-        if(!this.dead) 
-            this.position.add(this.velocity);
+        if(!this.dead) {
+            if(this.isParamedic && lockedOn && patientDistance >= 10) {
+                Vector emergencyVelocity = this.velocity.setMagnitude(this.velocity.getMagnitude()*2);//*(1.2 + ((1/3+1/4)/2)-0.02));
+                this.position.add(emergencyVelocity);
+            } else
+                this.position.add(this.velocity);
+        }
         this.velocity.add(this.acceleration);
-        this.velocity.limit(maxSpeed);
+        this.velocity.limit(maxSpeed);//*((this.isParamedic && lockedOn)?20:1));
         if(this.dead && deathAngle == 0) {
             deathAngle = this.velocity.dir() + Math.PI/2;
-    }
-        // if(this.isParamedic && BoidRunner.diagnosedCount == 0) {
-        //     lockedOn = false;
-        // }// else
-        //     if(this.isParamedic) {
-        //         lockedOn = true;
-        //         for(Boid boid :BoidRunner.flock)
-        //            if(boid.healthStatus == DIAGNOSED) {
-        //                patient = boid;
-        //                break;
-        //            }
-        //     }
+        }
     }
 
     void edges() {

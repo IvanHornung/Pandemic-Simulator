@@ -24,6 +24,10 @@ public class Vector {
     public void setXValue(double newValue) { this.xvalue = newValue; }
     public void setYValue(double newValue) { this.yvalue = newValue; }
 
+    public double getMagnitude() {
+        return Math.sqrt(Math.pow(this.xvalue, 2) + Math.pow(this.yvalue, 2));
+    }
+
     public void limit(double maxForce) {
         double magnitude = Math.sqrt(Math.pow(this.xvalue, 2) + Math.pow(this.yvalue, 2));
         double multiplier;
@@ -36,10 +40,11 @@ public class Vector {
         this.yvalue *= multiplier;
     }
 
-    public void setMagnitude(double newMagnitude) {
+    public Vector setMagnitude(double newMagnitude) {
         double currentMagnitude = Math.sqrt(Math.pow(this.xvalue, 2) + Math.pow(this.yvalue, 2));
         this.xvalue *= (newMagnitude/currentMagnitude);
         this.yvalue *= (newMagnitude/currentMagnitude);
+        return this;
     }
     
     void add(Vector parent) {
