@@ -36,7 +36,7 @@ public class Boid {
                 PARAMEDIC = Color.BLUE;
     double immunityLife;
     boolean isImmune = false, isParamedic = false;
-    static Boid patient; static boolean lockedOn = false;
+    static Boid patient = null; static boolean lockedOn = false;
 
     public Boid() {
         if(!hasInfected) {
@@ -88,6 +88,10 @@ public class Boid {
                 } else {
                     this.hasDisease = false; //!Recovery
                     this.isImmune = true;
+                    if(this.healthStatus==DIAGNOSED) {
+                        patient = null;
+                        lockedOn = false;
+                    }
                     //BoidRunner.updateRecovered();
                     new Sound("recovery.wav");
                     this.healthStatus = RECOVERED;
@@ -109,7 +113,12 @@ public class Boid {
                 new Sound("immunitylost.wav");
             }
         } //!Alignment
+        if(!this.isParamedic || (this.isParamedic && !lockedOn)) 
         for(int i = 0; i < flock.size(); i++) {
+            if(this.isParamedic && flock.get(i).healthStatus == DIAGNOSED) {
+                patient = flock.get(i);
+                lockedOn = true;
+            }
             double dist = distance(this.position.xvalue, this.position.yvalue, flock.get(i).position.xvalue, flock.get(i).position.yvalue);
             if(flock.get(i) != this && dist < perceptionRadius) {
                 steering.add(flock.get(i).velocity);
@@ -130,14 +139,30 @@ public class Boid {
                         flock.get(i).immunity -= (1/dist)*((BoidRunner.totalInfected > 35) ? 1 : ((BoidRunner.totalInfected > 11) ? 2.5 : ((BoidRunner.totalInfected < 5) ? 4.5 : 3.5)));
                     }
                 } else if(!this.hasDisease && !flock.get(i).hasDisease && flock.get(i).immunity < flock.get(i).immunityCap && !flock.get(i).isImmune) {
-                    flock.get(i).immunity += (Math.random()*5+1)/((BoidRunner.totalInfected > 35) ? 10000 : 100)*((this.isParamedic)?100:1); //!Paramedic work
+                    flock.get(i).immunity += (Math.random()*5+1)/((BoidRunner.totalInfected > 35) ? 10000 : 100);
                     if(flock.get(i).immunity > flock.get(i).immunityCap)
                        flock.get(i).immunity = flock.get(i).immunityCap; //!Immunity gain
+                } if(flock.get(i).isParamedic && this.healthStatus == DIAGNOSED) {
+                    this.hasDisease = false; //!Paramedic Work
+                    this.isImmune = true;
+                    //BoidRunner.updateRecovered();
+                    new Sound("treatment.wav");
+                    this.healthStatus = RECOVERED;
+                    this.immunity = this.immunityCap * (Math.random()*50+100);
+                    this.immunityCap = this.immunity;
+                    this.immunityLife = initialLifeSpan*(6*(Math.random()*0.8+0.5));
+                    lockedOn = false;
+                    patient = null;
                 }
+                    
             }
-            }
-        if(total > 0) {
-            steering.divide((double)total);
+        } //if(this.isParamedic && lockedOn && patient.velocity.movement() != 0)
+           // steering.add(patient.velocity);
+        if(total > 0 || (this.isParamedic && lockedOn && patient.velocity.movement() != 0)) {
+            if(total > 0)
+                steering.divide((double)total);
+            else
+                steering.add(patient.velocity);
             steering.setMagnitude(((alignmentMaxSpeed != maxSpeed) ? alignmentMaxSpeed : maxSpeed));
             steering.subtract(this.velocity);
             if(!this.isParamedic)
@@ -158,15 +183,17 @@ public class Boid {
                     total++;
                 }
             }
-        else
-            steering.add(patient.position);
-        if(total > 0) {
-            steering.divide((double)total);
+        // else
+        //     steering.add(patient.position);
+        if(total > 0 || (this.isParamedic && lockedOn && patient.velocity.movement() != 0)) {
+            if(total > 0)
+                steering.divide((double)total);
+            else
+                steering.add(patient.position);
             steering.subtract(this.position);
             steering.setMagnitude(((cohesionMaxSpeed != maxSpeed) ? cohesionMaxSpeed : maxSpeed));
             steering.subtract(this.velocity);
-            if(!this.isParamedic) //check here if teleporting
-                steering.limit(((cohesionMaxForce != maxForce) ? cohesionMaxForce : maxForce));
+            steering.limit(((cohesionMaxForce != maxForce) ? cohesionMaxForce : maxForce));
         }
         return steering;
     }
@@ -182,10 +209,8 @@ public class Boid {
                 difference.subtract(boid.position);
                 if(dist == 0.0) dist += 0.001;
                 difference.divide(dist*dist); //or *1/x; inverselly proportional
-                if(boid.dead || boid.healthStatus == DIAGNOSED) {
+                if((boid.dead || boid.healthStatus == DIAGNOSED) && !this.isParamedic){
                     difference.multiply(Math.random()*5+20);
-                } if(this.isParamedic && boid.hasDisease) {
-                    difference.divide(Math.random()*15+20);
                 }
                 steering.add(difference);
                 //Implementing FOV would go here, check Git history to access
@@ -219,12 +244,18 @@ public class Boid {
         this.velocity.limit(maxSpeed);
         if(this.dead && deathAngle == 0) {
             deathAngle = this.velocity.dir() + Math.PI/2;
-        } 
-        if(this.isParamedic && BoidRunner.totalInfected == 0) {
-            lockedOn = false;
-        } else
-            if(this.isParamedic)
-                lockedOn = true;
+        }
+        // if(this.isParamedic && BoidRunner.diagnosedCount == 0) {
+        //     lockedOn = false;
+        // }// else
+        //     if(this.isParamedic) {
+        //         lockedOn = true;
+        //         for(Boid boid :BoidRunner.flock)
+        //            if(boid.healthStatus == DIAGNOSED) {
+        //                patient = boid;
+        //                break;
+        //            }
+        //     }
     }
 
     void edges() {

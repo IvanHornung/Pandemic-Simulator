@@ -9,7 +9,8 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
     public static final int WIDTH = 1920;
     public static final int HEIGHT = 1080;
     static ArrayList<Boid> flock = new ArrayList<Boid>();
-    static int totalInfected = 1, deathCount = 0, healthyCount = 0, criticalCount = 0, aliveCount, recoveryCount = 0, visiblyDead = 0;
+    static int totalInfected = 1, deathCount = 0, healthyCount = 0, criticalCount = 0, 
+            aliveCount, recoveryCount = 0, visiblyDead = 0, diagnosedCount = 0, paramedicCount = 0;
 
     static JLabel infectedDisplay, deathDisplay, healthyDisplay, criticalDisplay, aliveDisplay, recoveredDisplay;
     private Sound music;
@@ -61,6 +62,10 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                     totalInfected++;
                 else if(flock.get(i).healthStatus == Boid.RECOVERED)
                     recoveryCount++;
+                else if(flock.get(i).healthStatus == Boid.DIAGNOSED)
+                    diagnosedCount++;
+                else if(flock.get(i).healthStatus == Boid.PARAMEDIC)
+                    paramedicCount++;
                 else
                     visiblyDead++;
                 if(flock.get(i).dead && ((int)(Math.random()*(totalInfected*600+((totalInfected == 0)?1:0))) <= visiblyDead)) {

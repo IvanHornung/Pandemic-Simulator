@@ -70,4 +70,8 @@ public class Vector {
         this.xvalue = xvalue;
         this.yvalue = yvalue;
     }
+
+    double movement() {
+        return this.xvalue+this.yvalue;
+    }
 }
