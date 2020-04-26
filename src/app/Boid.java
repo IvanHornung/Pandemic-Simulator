@@ -39,6 +39,7 @@ public class Boid {
     static Boid patient = null; static boolean lockedOn = false;
     double healTime = this.initialImmunity;
     int sirens = 0, sirenCount = 0;
+    Sound siren = null;
 
     public Boid() {
         if(!hasInfected) {
@@ -132,8 +133,14 @@ public class Boid {
             if(this.isParamedic && flock.get(i).healthStatus == DIAGNOSED) {
                 patient = flock.get(i);
                 lockedOn = true;
-                if((int)(Math.random()*10)==0)
-                    new Sound("ambulance.wav");
+                switch((int)(Math.random()*2)){
+                    case 0:
+                        siren = new Sound("ambulance.wav");
+                        break;
+                    case 1:
+                        siren = new Sound("ambulance2.wav");
+                        break;
+                }
                 break;
             }
             double dist = distance(this.position.xvalue, this.position.yvalue, flock.get(i).position.xvalue, flock.get(i).position.yvalue);
@@ -172,7 +179,8 @@ public class Boid {
                     if(healTime <= 0) {
                         this.hasDisease = false; //!Paramedic Work
                         this.isImmune = true;
-                        //BoidRunner.updateRecovered();
+                        if(siren != null) 
+                            siren.stopSong();
                         new Sound("treatment.wav");
                         this.healthStatus = RECOVERED;
                         this.immunity = this.immunityCap * (Math.random()*50+100);
@@ -242,7 +250,7 @@ public class Boid {
                 if(dist == 0.0) dist += 0.001;
                 difference.divide(dist*dist); //or *1/x; inverselly proportional
                 if((boid.dead || (boid.healthStatus == DIAGNOSED && !this.isParamedic) || this.healthStatus == PARANOID || (boid.isParamedic && lockedOn)) && !this.isParamedic){
-                    difference.multiply(Math.random()*5+((boid.isParamedic && lockedOn)?40:20));
+                    difference.multiply(Math.random()*5+((boid.isParamedic && lockedOn)?80:20));
                 } if(this.isParamedic && boid.isParamedic)
                     difference.multiply(10);
                 // } if(this.healthStatus == PARANOID)

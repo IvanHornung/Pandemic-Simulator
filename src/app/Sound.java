@@ -24,8 +24,17 @@ public class Sound extends JFrame {
                 url = this.getClass().getClassLoader().getResource(filename);
                 AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
                 clip.open(audioIn);
+                if(filename.startsWith("ambulance")) {
+                    FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+                    // set the gain (between 0.0 and 1.0)
+                    double gain = 0.05;   
+                    float dB = (float)(Math.log(gain) / Math.log(10.0) * 20.0);
+                    gainControl.setValue(dB);
+                }
                 clip.start();
-                clip.loop((filename.equals("plague.wav") || filename.equals("ambience.wav") ? 10 : 0));
+                clip.loop((filename.equals("plague.wav") || filename.equals("ambience.wav") ||
+                            filename.startsWith("ambulance")) ? 20 : 0);
+
             } catch (UnsupportedAudioFileException e) {
                 e.printStackTrace();
             } catch (IOException e) {
