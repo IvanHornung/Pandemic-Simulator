@@ -32,7 +32,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
             flock.add(new Boid());
 
         music = new Sound("plague.wav");
-        //music = new Sound("ambience.wav"); //uncomment this for music!
+        //music = new Sound("ambience.wav");
     }
 
     @Override
@@ -54,26 +54,23 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                 flock.get(i).update();
                 if(flock.get(i).dead && (int)(Math.random()*(totalInfected*100+1)) == 0) {
                     flock.remove(i);
-                    deathCount--;
-                    deathDisplay.setText(" Dead: " + deathCount);
                     i--; toAdd++;
                 }
+                
             }
             for(int i = 0; i < toAdd; i++)
                 flock.add(new Boid());
-            /*if(totalInfected == 0) {
-                clean();
-                Boid.hasInfected = false;
-            }*/
             int more = (int)(Math.random()*((flock.size()>=900) ? 1000 : 500));
             if(more == 0)
                 flock.add(new Boid());
             if(addedNewBoid) {
-                flock.add(new Boid(mouseXPosition, mouseYPosition));
+                boolean addInfected = false;
+                if(recoveryCount > (int)(flock.size()*0.75))
+                    addInfected = true;
+                flock.add(new Boid(mouseXPosition, mouseYPosition, addInfected));
                 addedNewBoid = false;
             }   
             updateHealthy();
-            //updateAlive();
             this.repaint();
             try {
                 Thread.sleep(10);
@@ -81,25 +78,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         }
     }
 
-   /* public void clean() {
-        int toAdd = deathCount;
-        do {
-            for(int i = 0; i < flock.size(); i++) {
-                if(flock.get(i).dead && (int)(Math.random()*100) == 0) {
-                    flock.remove(i);
-                    deathCount--;
-                    deathDisplay.setText(" Dead: " + deathCount);
-                    i--;
-                    this.repaint();
-                    try {
-                        Thread.sleep(30);
-                    } catch(InterruptedException e) {}
-                }
-            }
-        } while(deathCount != 0);
-        for(int i = 0; i < toAdd; i++)
-            flock.add(new Boid());
-    }*/
+    //clean method available in git history; wipes out all dead at once
 
     void createLabels() {
         //Healthy
@@ -171,6 +150,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
 
     static void updateRecovered() {
         recoveryCount++;
+        healthyCount++;
         totalInfected--;
         infectedDisplay.setText(" Infected: " + totalInfected);
         recoveredDisplay.setText(" Recovered: " + recoveryCount);
@@ -195,6 +175,12 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         aliveDisplay.setText("|Alive: " + aliveCount);
     }
 
+    static void lostImmunity() {
+        recoveryCount--;
+        recoveredDisplay.setText(" Recovered: " + recoveryCount);
+        new Sound("immunitylost.wav");
+    }
+
     public void keyReleased( KeyEvent event ) {}
 
     public void keyPressed( KeyEvent event ) {
@@ -203,14 +189,14 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
             Boid.incrementMaxSpeed();
         if(event.getKeyCode()==KeyEvent.VK_DOWN)
             Boid.decrementMaxSpeed();
-        if(event.getKeyCode() == KeyEvent.VK_Q)
-            Boid.incrementMaxForce();
-        if(event.getKeyCode() == KeyEvent.VK_A)
-            Boid.decrementMaxForce();
+        //if(event.getKeyCode() == KeyEvent.VK_Q)
+        //    Boid.incrementMaxForce();
+        //if(event.getKeyCode() == KeyEvent.VK_A)
+        //    Boid.decrementMaxForce();
 
         //!Alignment
-        if(event.getKeyCode()==KeyEvent.VK_W) 
-            Boid.incremementAlignmentPerceptionRadius();
+        //if(event.getKeyCode()==KeyEvent.VK_W) 
+        //    Boid.incremementAlignmentPerceptionRadius();
         if(event.getKeyCode()==KeyEvent.VK_S)
             Boid.decrementAlignmentPerceptionRadius();
         if(event.getKeyCode() == KeyEvent.VK_E)
@@ -247,10 +233,13 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
             Boid.incrementSeparationMaxForce();
         if(event.getKeyCode() == KeyEvent.VK_SEMICOLON)
             Boid.decrementSeparationMaxForce();
+        //!Toggles
         if(event.getKeyCode() == KeyEvent.VK_Q)
             toggleCounts(true);
         if(event.getKeyCode() == KeyEvent.VK_E)
             toggleCounts(false);
+        if(event.getKeyCode() == KeyEvent.VK_W)
+            Sound.tickOff = !Sound.tickOff;
     }
 
     public void keyTyped(KeyEvent event) {}

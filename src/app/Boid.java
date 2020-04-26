@@ -25,12 +25,15 @@ public class Boid {
     boolean hasDisease = false;
     Color healthStatus = Color.WHITE;
     double immunity = (Math.random()*10+5);
-    double immunityCap = immunity;
+    double immunityCap = immunity, initialImmunity = immunity;
     double lifeSpan = (Math.random()*300+500);
+    double initialLifeSpan = lifeSpan;
     boolean dead = false;
     double deathAngle = 0;
     static int mortalityRate = 14;
     static Color RECOVERED = new Color(101,194,255), DEAD = new Color(154, 74, 178);
+    double immunityLife;
+    boolean isImmune = false;
 
     public Boid() {
         if(!hasInfected) {
@@ -46,7 +49,12 @@ public class Boid {
         this.acceleration = new Vector(0,0);
     }
     
-    public Boid(int mouseXPosition, int mouseYPosition) {
+    public Boid(int mouseXPosition, int mouseYPosition, boolean addedInfected) {
+        if(addedInfected) {
+            healthStatus = Color.RED;
+            hasInfected = true;
+            hasDisease = true;
+        }
         this.position = new Vector(mouseXPosition, mouseYPosition);
         double angle = Math.random()*360;
         double radius = Math.random()*2+2; //2-4
@@ -59,21 +67,32 @@ public class Boid {
         int total = 0;
         Vector steering = new Vector(0,0);
         //!Part 2: Lifespans
-        if(this.hasDisease && !this.dead) {
+        if(this.hasDisease && !this.dead && !this.isImmune) {
             lifeSpan--;
             if(lifeSpan <= 0) {
-                if((int)(Math.random()*100) <= mortalityRate) {
+                if((int)(Math.random()*100) < mortalityRate) {
                     this.dead = true; //!Death
                     //flock.remove(this);
                     BoidRunner.updateDead();
                     this.healthStatus = DEAD;
                 } else {
                     this.hasDisease = false; //!Recovery
+                    this.isImmune = true;
                     BoidRunner.updateRecovered();
                     this.healthStatus = RECOVERED;
                     this.immunity = this.immunityCap * (Math.random()*50+100);
                     this.immunityCap = this.immunity;
+                    this.immunityLife = initialLifeSpan*(12*(Math.random()*0.8+0.5));
                 }
+            }
+        } else if(this.isImmune && !this.hasDisease) { //!Immunity loss
+            this.immunityLife--;
+            if(this.immunityLife < 0) {
+                this.isImmune = false;
+                this.healthStatus = Color.WHITE;
+                this.immunity = this.initialImmunity*(Math.random()*0.6+0.7);
+                this.immunityCap = this.immunity;
+                BoidRunner.lostImmunity();
             }
         }
         for(int i = 0; i < flock.size(); i++) {
