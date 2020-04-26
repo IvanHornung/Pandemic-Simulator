@@ -45,7 +45,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         }
     }
 
-    boolean intensityPlayed = false;
+    boolean intensityPlayed = false, milestonePlayed = false;
 
     public void run() {
         while(true) {
@@ -63,21 +63,26 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                     recoveryCount++;
                 else
                     visiblyDead++;
-                if(flock.get(i).dead && ((int)(Math.random()*(totalInfected*1000+((totalInfected == 0)?1:0))) <= visiblyDead)) {
+                if(flock.get(i).dead && ((int)(Math.random()*(totalInfected*600+((totalInfected == 0)?1:0))) <= visiblyDead)) {
                     flock.remove(i);
                     i--; toAdd++;
                 }
             }
-            if(!intensityPlayed && flock.size()>=1300 && flock.size()%100 == 0) 
-                intensityPlayed = !intensityPlayed;
+            if(!intensityPlayed && flock.size()>=1300 && (flock.size()+1)%100 == 0) 
+                intensityPlayed = true;
             if(totalInfected == 0)
                 flock.add(new Boid((int)(Math.random()*WIDTH), (int)(Math.random()*HEIGHT), true));
             else if(totalInfected >= 1100 && !intensityPlayed) {
                 new Sound("intensity.wav");
                 intensityPlayed = !intensityPlayed;
             }
-            if(deathCount % 100 == 0 && deathCount >= 100)
-                new Sound("deathmilestone.wav");
+            if(deathCount >= 100) {
+                if(!milestonePlayed && deathCount % 100 == 0) {
+                    new Sound("deathmilestone.wav");
+                    milestonePlayed = true;
+                } else if((deathCount-1)%100 == 0)
+                    milestonePlayed = false;
+            }
             updateValues();
             for(int i = 0; i < toAdd; i++)
                 flock.add(new Boid());

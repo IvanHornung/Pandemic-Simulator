@@ -32,9 +32,11 @@ public class Boid {
     double deathAngle = 0;
     static int mortalityRate = 14;
     static Color RECOVERED = new Color(101,194,255), DEAD = new Color(154, 74, 178), 
-                HEALTHY = Color.WHITE, INFECTED = Color.RED, DIAGNOSED = new Color(134, 0 , 0);
+                HEALTHY = Color.WHITE, INFECTED = Color.RED, DIAGNOSED = new Color(134, 0 , 0),
+                PARAMEDIC = Color.BLUE;
     double immunityLife;
-    boolean isImmune = false;
+    boolean isImmune = false, isParamedic = false;
+    static final int paramedicPerception = 500;
 
     public Boid() {
         if(!hasInfected) {
@@ -48,6 +50,11 @@ public class Boid {
         double radius = Math.random()*2+2; //2-4
         this.velocity = new Vector((radius * Math.cos(angle)), (radius * Math.sin(angle)));
         this.acceleration = new Vector(0,0);
+        if((int)(Math.random()*300)==0 && !hasDisease) {
+            isParamedic = true;
+            this.healthStatus = PARAMEDIC;
+            immunity = 2000;
+        }
     }
     
     public Boid(int mouseXPosition, int mouseYPosition, boolean addedInfected) {
@@ -66,7 +73,10 @@ public class Boid {
     }
 
     Vector align(ArrayList<Boid> flock) {
-        int perceptionRadius = (int)alignmentPerceptionRadius; //(alignmentPerceptionRadius == 50) ? 50 : (int)alignmentPerceptionRadius;
+        int perceptionRadius = (int)((this.isParamedic)?paramedicPerception:cohesionPerceptionRadius);
+        if(this.isParamedic) {
+            perceptionRadius = 500;
+        }
         int total = 0;
         Vector steering = new Vector(0,0);
         //!Part 2: Lifespans
@@ -89,7 +99,7 @@ public class Boid {
                     this.immunityLife = initialLifeSpan*(6*(Math.random()*0.8+0.5)); //12*..
                 }
             }
-        } else if(this.isImmune && !this.hasDisease) { //!Immunity loss
+        } else if(this.isImmune) { //!Immunity loss
             this.immunityLife--;
             if(this.immunityLife < 0) {
                 this.isImmune = false;
@@ -97,6 +107,7 @@ public class Boid {
                 this.immunity = this.initialImmunity*(Math.random()*0.8+0.4);
                 this.immunityCap = this.immunity;
                 this.immunityLife = initialLifeSpan*(6*(Math.random()*0.8+0.5));
+                this.lifeSpan = this.initialLifeSpan;
                 //BoidRunner.lostImmunity();
                 new Sound("immunitylost.wav");
             }
@@ -105,6 +116,12 @@ public class Boid {
             double dist = distance(this.position.xvalue, this.position.yvalue, flock.get(i).position.xvalue, flock.get(i).position.yvalue);
             if(flock.get(i) != this && dist < perceptionRadius) {
                 steering.add(flock.get(i).velocity);
+                if(this.isParamedic && flock.get(i).hasDisease) {
+                    Vector difference = new Vector(this.position.xvalue, this.position.yvalue);
+                    difference.add(flock.get(i).position);
+                    difference.multiply(300);
+                    steering.add(difference);
+                }
                 total++;
                 //!Viral transmission
                 if(this.hasDisease && !flock.get(i).hasDisease && (!this.isImmune || flock.get(i).dead)) {
@@ -119,10 +136,10 @@ public class Boid {
                             this.healthStatus = DIAGNOSED; //!Diagnosis
                             new Sound("diagnosis.wav");
                         }
-                        flock.get(i).immunity -= (1/dist)*( );
+                        flock.get(i).immunity -= (1/dist)*((BoidRunner.totalInfected > 35) ? 1 : ((BoidRunner.totalInfected > 11) ? 2.5 : ((BoidRunner.totalInfected < 5) ? 4.5 : 3.5)));
                     }
                 } else if(!this.hasDisease && !flock.get(i).hasDisease && flock.get(i).immunity < flock.get(i).immunityCap && !flock.get(i).isImmune) {
-                    flock.get(i).immunity += (Math.random()*5+1)/((BoidRunner.totalInfected > 35) ? 10000 : 100);
+                    flock.get(i).immunity += (Math.random()*5+1)/((BoidRunner.totalInfected > 35) ? 10000 : 100)*((this.isParamedic)?100:1);
                     if(flock.get(i).immunity > flock.get(i).immunityCap)
                        flock.get(i).immunity = flock.get(i).immunityCap; //!Immunity gain
                 }
@@ -132,19 +149,26 @@ public class Boid {
             steering.divide((double)total);
             steering.setMagnitude(((alignmentMaxSpeed != maxSpeed) ? alignmentMaxSpeed : maxSpeed));
             steering.subtract(this.velocity);
-            steering.limit(((alignmentMaxForce != maxForce) ? alignmentMaxForce : maxForce));
+            if(!this.isParamedic)
+                steering.limit(((alignmentMaxForce != maxForce) ? alignmentMaxForce : maxForce));
         }
         return steering;
     }
 
     Vector cohesion(ArrayList<Boid> flock) {
-        int perceptionRadius = (int)cohesionPerceptionRadius;
+        int perceptionRadius = (int)((this.isParamedic)?paramedicPerception:cohesionPerceptionRadius);
         int total = 0;
         Vector steering = new Vector(0,0);
         for(Boid boid : flock) {
             double dist = distance(this.position.xvalue, this.position.yvalue, boid.position.xvalue, boid.position.yvalue);
             if(boid != this && dist < perceptionRadius) {
                 steering.add(boid.position);
+                if(this.isParamedic && boid.hasDisease) {
+                    Vector difference = new Vector(this.position.xvalue, this.position.yvalue);
+                    difference.add(boid.position);
+                     difference.multiply(300);
+                    steering.add(difference);
+                }
                 total++;
             }
         }
@@ -153,7 +177,8 @@ public class Boid {
             steering.subtract(this.position);
             steering.setMagnitude(((cohesionMaxSpeed != maxSpeed) ? cohesionMaxSpeed : maxSpeed));
             steering.subtract(this.velocity);
-            steering.limit(((cohesionMaxForce != maxForce) ? cohesionMaxForce : maxForce));
+            if(!this.isParamedic)
+                steering.limit(((cohesionMaxForce != maxForce) ? cohesionMaxForce : maxForce));
         }
         return steering;
     }
