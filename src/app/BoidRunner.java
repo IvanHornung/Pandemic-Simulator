@@ -10,7 +10,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
     public static final int HEIGHT = 1080;
     static ArrayList<Boid> flock = new ArrayList<Boid>();
     static int totalInfected = 1, deathCount = 0, healthyCount = 0, criticalCount = 0, 
-            aliveCount, recoveryCount = 0, visiblyDead = 0, diagnosedCount = 0, paramedicCount = 0;
+            aliveCount, recoveryCount = 0, visiblyDead = 0, diagnosedCount = 0, paramedicCount = 0, paranoidCount = 0;
 
     static JLabel infectedDisplay, deathDisplay, healthyDisplay, criticalDisplay, aliveDisplay, recoveredDisplay;
     private Sound music;
@@ -51,12 +51,14 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
     public void run() {
         while(true) {
             int toAdd = 0;
-            totalInfected = 0; healthyCount = 0; recoveryCount = 0; visiblyDead = 0;
+            totalInfected = 0; healthyCount = 0; recoveryCount = 0; visiblyDead = 0; diagnosedCount = 0; paramedicCount = 0; paranoidCount = 0;
             for(int i = 0; i < flock.size(); i++){
                 flock.get(i).edges();
                 flock.get(i).flock(flock);
                 flock.get(i).update();
-                if(flock.get(i).healthStatus == Boid.HEALTHY)
+                if(flock.get(i).isParamedic)
+                    paramedicCount++;
+                else if(flock.get(i).healthStatus == Boid.HEALTHY)
                     healthyCount++;
                 else if(flock.get(i).healthStatus == Boid.INFECTED)
                     totalInfected++;
@@ -64,8 +66,8 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                     recoveryCount++;
                 else if(flock.get(i).healthStatus == Boid.DIAGNOSED)
                     diagnosedCount++;
-                else if(flock.get(i).isParamedic)
-                    paramedicCount++;
+                else if(flock.get(i).healthStatus == Boid.PARANOID)
+                    paranoidCount++;
                 else
                     visiblyDead++;
                 if(flock.get(i).dead && ((int)(Math.random()*(totalInfected*600+((totalInfected == 0)?1:0))) <= visiblyDead)) {
@@ -88,6 +90,17 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                     flock.get(i).PARAMEDIC = Color.BLUE;
                     flock.get(i).healthStatus = flock.get(i).PARAMEDIC;
                 }
+                if((int)(Math.random()*healthyCount*2000+((healthyCount == 0)?1:0)) == 0 && !flock.get(i).hasDisease && diagnosedCount >= 3 && flock.get(i).healthStatus != Boid.PARANOID && paranoidCount <= 10) {
+                    flock.get(i).healthStatus = Boid.PARANOID;
+                    new Sound("paranoia.wav");
+                } if(recoveryCount >= 800 && flock.get(i).healthStatus == Boid.PARANOID && (int)(int)(Math.random()*totalInfected*200+((totalInfected == 0)?1:0)) == 0 ) {
+                    flock.get(i).healthStatus = Boid.HEALTHY;
+                    new Sound("paranoiaEnded.wav");
+                }
+            }
+            if(paramedicCount == 0 && diagnosedCount != 0) {
+                flock.add(new Boid(true));
+                new Sound("ambulance.wav");
             }
             if(!intensityPlayed && flock.size()>=1300 && (flock.size()+1)%100 == 0) 
                 intensityPlayed = true;
