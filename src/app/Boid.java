@@ -26,12 +26,13 @@ public class Boid {
     Color healthStatus = HEALTHY;
     double immunity = (Math.random()*10+5);
     double immunityCap = immunity, initialImmunity = immunity;
-    double lifeSpan = (Math.random()*300+500);
+    double lifeSpan = (Math.random()*300+500)*2;
     double initialLifeSpan = lifeSpan;
     boolean dead = false;
     double deathAngle = 0;
     static int mortalityRate = 14;
-    static Color RECOVERED = new Color(101,194,255), DEAD = new Color(154, 74, 178), HEALTHY = Color.WHITE, INFECTED = Color.RED;
+    static Color RECOVERED = new Color(101,194,255), DEAD = new Color(154, 74, 178), 
+                HEALTHY = Color.WHITE, INFECTED = Color.RED, DIAGNOSED = new Color(134, 0 , 0);
     double immunityLife;
     boolean isImmune = false;
 
@@ -60,6 +61,8 @@ public class Boid {
         double radius = Math.random()*2+2; //2-4
         this.velocity = new Vector((radius * Math.cos(angle)), (radius * Math.sin(angle)));
         this.acceleration = new Vector(0,0);
+        if(BoidRunner.totalInfected == 1)
+            this.lifeSpan = 12000;
     }
 
     Vector align(ArrayList<Boid> flock) {
@@ -83,7 +86,7 @@ public class Boid {
                     this.healthStatus = RECOVERED;
                     this.immunity = this.immunityCap * (Math.random()*50+100);
                     this.immunityCap = this.immunity;
-                    this.immunityLife = initialLifeSpan*(12*(Math.random()*0.8+0.5));
+                    this.immunityLife = initialLifeSpan*(6*(Math.random()*0.8+0.5)); //12*..
                 }
             }
         } else if(this.isImmune && !this.hasDisease) { //!Immunity loss
@@ -91,9 +94,11 @@ public class Boid {
             if(this.immunityLife < 0) {
                 this.isImmune = false;
                 this.healthStatus = HEALTHY;
-                this.immunity = this.initialImmunity*(Math.random()*0.6+0.7);
+                this.immunity = this.initialImmunity*(Math.random()*0.8+0.4);
                 this.immunityCap = this.immunity;
-                BoidRunner.lostImmunity();
+                this.immunityLife = initialLifeSpan*(6*(Math.random()*0.8+0.5));
+                //BoidRunner.lostImmunity();
+                new Sound("immunitylost.wav");
             }
         }
         for(int i = 0; i < flock.size(); i++) {
@@ -102,16 +107,21 @@ public class Boid {
                 steering.add(flock.get(i).velocity);
                 total++;
                 //!Viral transmission
-                if(this.hasDisease && !flock.get(i).hasDisease) {
+                if(this.hasDisease && !flock.get(i).hasDisease && (!this.isImmune || flock.get(i).dead)) {
                     if(flock.get(i).immunity <= 0) {
-                        flock.get(i).healthStatus = INFECTED;
+                        flock.get(i).healthStatus = INFECTED; //!Infection
                         //BoidRunner.updateInfected();
                         new Sound("newpatient.wav");
                         flock.get(i).hasDisease = true;
                     }
-                    else //!Immunity loss
-                        flock.get(i).immunity -= (1/dist)*((BoidRunner.totalInfected > 35) ? 1 : ((BoidRunner.totalInfected > 11) ? 2.5 : ((BoidRunner.totalInfected < 5) ? 4.5 : 3.5)));
-                } else if(!this.hasDisease && !flock.get(i).hasDisease && flock.get(i).immunity < flock.get(i).immunityCap) {
+                    else {//!Immunity loss
+                        if((int)(Math.random()*40000)==0) {
+                            this.healthStatus = DIAGNOSED; //!Diagnosis
+                            new Sound("diagnosis.wav");
+                        }
+                        flock.get(i).immunity -= (1/dist)*( );
+                    }
+                } else if(!this.hasDisease && !flock.get(i).hasDisease && flock.get(i).immunity < flock.get(i).immunityCap && !flock.get(i).isImmune) {
                     flock.get(i).immunity += (Math.random()*5+1)/((BoidRunner.totalInfected > 35) ? 10000 : 100);
                     if(flock.get(i).immunity > flock.get(i).immunityCap)
                        flock.get(i).immunity = flock.get(i).immunityCap; //!Immunity gain
@@ -159,7 +169,7 @@ public class Boid {
                 difference.subtract(boid.position);
                 if(dist == 0.0) dist += 0.001;
                 difference.divide(dist*dist); //or *1/x; inverselly proportional
-                if(boid.dead) {
+                if(boid.dead || boid.healthStatus == DIAGNOSED) {
                     difference.multiply(Math.random()*5+20);
                 }
                 steering.add(difference);
