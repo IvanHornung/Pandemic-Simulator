@@ -48,6 +48,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
     public void run() {
         while(true) {
             int toAdd = 0;
+            totalInfected = 0; healthyCount = 0; recoveryCount = 0;
             for(int i = 0; i < flock.size(); i++){
                 flock.get(i).edges();
                 flock.get(i).flock(flock);
@@ -56,8 +57,16 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                     flock.remove(i);
                     i--; toAdd++;
                 }
-                
+                if(flock.get(i).healthStatus == Boid.HEALTHY)
+                    healthyCount++;
+                else if(flock.get(i).healthStatus == Boid.INFECTED)
+                    totalInfected++;
+                else if(flock.get(i).healthStatus == Boid.RECOVERED)
+                    recoveryCount++;
             }
+            if(totalInfected == 0)
+                flock.add(new Boid((int)(Math.random()*WIDTH), (int)(Math.random()*HEIGHT), true));
+            updateValues();
             for(int i = 0; i < toAdd; i++)
                 flock.add(new Boid());
             int more = (int)(Math.random()*((flock.size()>=900) ? 1000 : 500));
@@ -70,7 +79,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                 flock.add(new Boid(mouseXPosition, mouseYPosition, addInfected));
                 addedNewBoid = false;
             }   
-            updateHealthy();
+            //updateHealthy();
             this.repaint();
             try {
                 Thread.sleep(10);
@@ -134,6 +143,15 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
     static void toggleCounts(boolean setting) {
         healthyDisplay.setVisible(setting);
         infectedDisplay.setVisible(setting);
+        recoveredDisplay.setVisible(setting);
+        deathDisplay.setVisible(setting);
+    }
+
+    static void updateValues() {
+        healthyDisplay.setText("Healthy: " + healthyCount);
+        infectedDisplay.setText(" Infected: " + totalInfected);
+        recoveredDisplay.setText(" Recovered: " + recoveryCount);
+        deathDisplay.setText("|Dead: " + deathCount);
     }
 
     static void updateHealthy() {

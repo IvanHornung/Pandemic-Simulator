@@ -23,7 +23,7 @@ public class Boid {
     
     static boolean hasInfected = false;
     boolean hasDisease = false;
-    Color healthStatus = Color.WHITE;
+    Color healthStatus = HEALTHY;
     double immunity = (Math.random()*10+5);
     double immunityCap = immunity, initialImmunity = immunity;
     double lifeSpan = (Math.random()*300+500);
@@ -31,13 +31,13 @@ public class Boid {
     boolean dead = false;
     double deathAngle = 0;
     static int mortalityRate = 14;
-    static Color RECOVERED = new Color(101,194,255), DEAD = new Color(154, 74, 178);
+    static Color RECOVERED = new Color(101,194,255), DEAD = new Color(154, 74, 178), HEALTHY = Color.WHITE, INFECTED = Color.RED;
     double immunityLife;
     boolean isImmune = false;
 
     public Boid() {
         if(!hasInfected) {
-            healthStatus = Color.RED;
+            healthStatus = INFECTED;
             hasInfected = true;
             hasDisease = true;
             lifeSpan = 2000;
@@ -51,7 +51,7 @@ public class Boid {
     
     public Boid(int mouseXPosition, int mouseYPosition, boolean addedInfected) {
         if(addedInfected) {
-            healthStatus = Color.RED;
+            healthStatus = INFECTED;
             hasInfected = true;
             hasDisease = true;
         }
@@ -72,13 +72,14 @@ public class Boid {
             if(lifeSpan <= 0) {
                 if((int)(Math.random()*100) < mortalityRate) {
                     this.dead = true; //!Death
-                    //flock.remove(this);
                     BoidRunner.updateDead();
+                    //new Sound("death.wav");
                     this.healthStatus = DEAD;
                 } else {
                     this.hasDisease = false; //!Recovery
                     this.isImmune = true;
-                    BoidRunner.updateRecovered();
+                    //BoidRunner.updateRecovered();
+                    new Sound("recovery.wav");
                     this.healthStatus = RECOVERED;
                     this.immunity = this.immunityCap * (Math.random()*50+100);
                     this.immunityCap = this.immunity;
@@ -89,7 +90,7 @@ public class Boid {
             this.immunityLife--;
             if(this.immunityLife < 0) {
                 this.isImmune = false;
-                this.healthStatus = Color.WHITE;
+                this.healthStatus = HEALTHY;
                 this.immunity = this.initialImmunity*(Math.random()*0.6+0.7);
                 this.immunityCap = this.immunity;
                 BoidRunner.lostImmunity();
@@ -103,8 +104,9 @@ public class Boid {
                 //!Viral transmission
                 if(this.hasDisease && !flock.get(i).hasDisease) {
                     if(flock.get(i).immunity <= 0) {
-                        flock.get(i).healthStatus = Color.RED;
-                        BoidRunner.updateInfected();
+                        flock.get(i).healthStatus = INFECTED;
+                        //BoidRunner.updateInfected();
+                        new Sound("newpatient.wav");
                         flock.get(i).hasDisease = true;
                     }
                     else //!Immunity loss
