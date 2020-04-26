@@ -64,13 +64,29 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                     recoveryCount++;
                 else if(flock.get(i).healthStatus == Boid.DIAGNOSED)
                     diagnosedCount++;
-                else if(flock.get(i).healthStatus == Boid.PARAMEDIC)
+                else if(flock.get(i).isParamedic)
                     paramedicCount++;
                 else
                     visiblyDead++;
                 if(flock.get(i).dead && ((int)(Math.random()*(totalInfected*600+((totalInfected == 0)?1:0))) <= visiblyDead)) {
                     flock.remove(i);
                     i--; toAdd++;
+                }
+                if(flock.get(i).isParamedic && Boid.lockedOn) {
+                    flock.get(i).sirenCount++;
+                    if(flock.get(i).sirenCount % 3 == 0) {
+                        flock.get(i).sirens++;
+                        if(flock.get(i).sirens==0)
+                            flock.get(i).PARAMEDIC = Color.BLUE;
+                        else if(flock.get(i).sirens==1)
+                            flock.get(i).PARAMEDIC = Color.WHITE;
+                        else if(flock.get(i).sirens == 2)
+                        flock.get(i).PARAMEDIC = Color.RED;
+                        flock.get(i).healthStatus = flock.get(i).PARAMEDIC;
+                    } if(flock.get(i).sirens > 2) flock.get(i).sirens = -1;
+                } else if(flock.get(i).isParamedic && flock.get(i).PARAMEDIC != Color.BLUE) {
+                    flock.get(i).PARAMEDIC = Color.BLUE;
+                    flock.get(i).healthStatus = flock.get(i).PARAMEDIC;
                 }
             }
             if(!intensityPlayed && flock.size()>=1300 && (flock.size()+1)%100 == 0) 
@@ -283,6 +299,9 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
 
         if(event.getKeyCode() == KeyEvent.VK_B)
             new Sound("bell.wav");
+        if(event.getKeyCode() == KeyEvent.VK_N)
+            new Sound("ambulance.wav");
+        
     }
 
     public void keyTyped(KeyEvent event) {}
