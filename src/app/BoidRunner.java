@@ -100,6 +100,20 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                     new Sound("paranoiaEnded.wav");
                 }
             }
+            if(clearGrid) {
+                for(int i = 0; i < flock.size(); i++) {
+                    flock.remove(i);
+                    i--;
+                }
+                clearGrid = false;
+            }
+            if(addedBoids.size() != 0) {
+                for(int i = 0; i < addedBoids.size(); i++) {
+                    flock.add(addedBoids.get(i));
+                    addedBoids.remove(i);
+                    i--;
+                }
+            }
             if(paramedicCount <= 2 && diagnosedCount != 0) {
                 flock.add(new Boid(true));
                 new Sound("ambulance.wav");
@@ -167,23 +181,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         recoveredDisplay.setForeground(Boid.RECOVERED);
         recoveredDisplay.setVisible(true);
         recoveredDisplay.setLocation((int)WIDTH/2+400, 200);
-        /*/Critical
-        criticalDisplay = new JLabel("|Critical: "+ criticalCount);
-        this.setLayout(new FlowLayout());
-        this.add(criticalDisplay);
-        criticalDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
-        criticalDisplay.setForeground(Color.RED);
-        criticalDisplay.setVisible(true);
-        criticalDisplay.setLocation((int)WIDTH/2+400, 200);
-        //Alive
-        aliveDisplay = new JLabel("|Alive: "+ aliveCount);
-        this.setLayout(new FlowLayout());
-        this.add(aliveDisplay);
-        aliveDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
-        aliveDisplay.setForeground(Color.BLUE.brighter().brighter());
-        aliveDisplay.setVisible(true);
-        aliveDisplay.setLocation((int)WIDTH/2-200, 300);
-        //Death*/
+        //Death
         deathDisplay = new JLabel(" Dead: "+ deathCount);
         this.setLayout(new FlowLayout());
         this.add(deathDisplay);
@@ -254,6 +252,8 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
 
     public void keyReleased( KeyEvent event ) {}
 
+    static ArrayList<Boid> addedBoids = new ArrayList<>();
+
     public void keyPressed( KeyEvent event ) {
         //!General
         if(event.getKeyCode()==KeyEvent.VK_UP) 
@@ -287,34 +287,56 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         //!Demonstations
         else if(event.getKeyCode() == KeyEvent.VK_BACK_SLASH) { //Clear grid
             new Sound("bell.wav");
-            for(int i = 0; i < flock.size(); i++) {
-                flock.remove(i);
-                i--;
-            }
+            clearGrid = true;
         }
         else if(event.getKeyCode() == KeyEvent.VK_R) { //Add healthy
             new Sound("recovery.wav");
-            flock.add(new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), false));
+            addedBoids.add(new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), false));
         }
         else if(event.getKeyCode() == KeyEvent.VK_F) { //Add infected
             new Sound("recovery.wav");
-            flock.add(new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), true));
+            addedBoids.add(new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), true));
         }
-        else if(event.getKeyCode() == KeyEvent.VK_T) { //Add infected
+        else if(event.getKeyCode() == KeyEvent.VK_T) { //Add recovered
             new Sound("recovery.wav");
-            flock.add(new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), false));
-            
+            Boid recoveredBoid = new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), false);
+            recoveredBoid.isImmune = true;
+            recoveredBoid.healthStatus = Boid.RECOVERED;
+            recoveredBoid.immunity = recoveredBoid.immunityCap * (Math.random()*50+100);
+            recoveredBoid.immunityCap = recoveredBoid.immunity;
+            recoveredBoid.immunityLife = recoveredBoid.initialLifeSpan*(6*(Math.random()*0.8+0.5));
+            addedBoids.add(recoveredBoid);
         }
-        else if(event.getKeyCode() == KeyEvent.VK_F) { //Add infected
+        else if(event.getKeyCode() == KeyEvent.VK_G) { //Add dead
             new Sound("recovery.wav");
-            flock.add(new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), true));
+            Boid deadBoid = new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), false);
+            deadBoid.dead = true;
+            deadBoid.healthStatus = Boid.DEAD;
+            addedBoids.add(deadBoid);
         }
-        else if(event.getKeyCode() == KeyEvent.VK_F) { //Add infected
+        else if(event.getKeyCode() == KeyEvent.VK_Y) { //Add paramedic
             new Sound("recovery.wav");
-            flock.add(new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), true));
+            Boid paramedicBoid = new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), false);
+            paramedicBoid.isParamedic = true;
+            paramedicBoid.healthStatus = paramedicBoid.PARAMEDIC;
+            paramedicBoid.immunity = 2000;
+            addedBoids.add(paramedicBoid);
         }
-        
+        else if(event.getKeyCode() == KeyEvent.VK_H) { //Add diagnosed
+            new Sound("recovery.wav");
+            Boid diagnosedBoid = new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), true);
+            diagnosedBoid.diagnosed = true;
+            diagnosedBoid.healthStatus = diagnosedBoid.DIAGNOSED;
+            addedBoids.add(diagnosedBoid);
+        }
+        else if(event.getKeyCode() == KeyEvent.VK_U) { //Add paranoid
+            new Sound("recovery.wav");
+            Boid paranoidBoid = new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), true);
+            paranoidBoid.healthStatus = Boid.PARANOID;
+            addedBoids.add(paranoidBoid);
+        }
     }
+    boolean clearGrid = false;
 
     public void keyTyped(KeyEvent event) {}
 

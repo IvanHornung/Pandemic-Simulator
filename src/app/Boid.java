@@ -179,7 +179,7 @@ public class Boid {
                             new Sound("diagnosis.wav");
                         }
                         flock.get(i).immunity -= (1/dist)*((BoidRunner.totalInfected > 35) ? 1 : ((BoidRunner.totalInfected > 11) 
-                                                 ? 2.5 : ((BoidRunner.totalInfected < 5) ? (BoidRunner.totalInfected < 2 ? 5.5: 4) : 3.5)));
+                                                 ? 2.5 : ((BoidRunner.totalInfected < 5) ? (BoidRunner.totalInfected < 2 ? 5: 4) : 3.5)));
                     }
                 } else if(!this.hasDisease && !flock.get(i).hasDisease && flock.get(i).immunity < flock.get(i).immunityCap && !flock.get(i).isImmune) {
                     flock.get(i).immunity += (Math.random()*5+1)/((BoidRunner.totalInfected > 35) ? 10000 : 100);
@@ -211,9 +211,9 @@ public class Boid {
                 steering.divide((double)total);
             //else
             //    steering.add(patient.velocity);
-            steering.setMagnitude(maxSpeed);
+            steering.setMagnitude(((alignmentMaxSpeed != maxSpeed) ? alignmentMaxSpeed : maxSpeed));
             steering.subtract(this.velocity);
-            steering.limit(maxForce);
+            steering.limit(((alignmentMaxForce != maxForce) ? alignmentMaxForce : maxForce));
         }
         return steering;
     }
@@ -239,9 +239,9 @@ public class Boid {
             }
             steering.subtract(this.position);
             //if((this.isParamedic && lockedOn))
-                steering.setMagnitude(maxSpeed);
+            steering.setMagnitude(((cohesionMaxSpeed != maxSpeed) ? cohesionMaxSpeed : maxSpeed));
             steering.subtract(this.velocity);
-            steering.limit(((this.isParamedic && lockedOn)?maxForce*3:maxForce));
+            steering.limit(((this.isParamedic && lockedOn)?cohesionMaxForce*3:(cohesionMaxForce != maxForce) ? cohesionMaxForce : maxForce));
             //if(this.isParamedic && lockedOn)
             //    steering.setMagnitude(maxSpeed*3);
             //else
@@ -281,7 +281,7 @@ public class Boid {
         }
         if(total > 0) {
             steering.divide((double)total);
-            steering.setMagnitude(((total > 40 || emergencyServicePresent) ? maxSpeed*((emergencyServicePresent)?6:2) : ((this.healthStatus == PARANOID)? maxSpeed*5:separationMaxForce)));
+            steering.setMagnitude(((total > 40 || emergencyServicePresent) ? separationMaxSpeed*((emergencyServicePresent)?6:2) : ((this.healthStatus == PARANOID)? separationMaxSpeed*5:separationMaxSpeed)));
             steering.subtract(this.velocity);
             steering.limit(((total > 40 || emergencyServicePresent) ? separationMaxForce*((emergencyServicePresent)?6:2) : ((this.healthStatus == PARANOID)? separationMaxForce*5:separationMaxForce)));
         }
@@ -367,8 +367,52 @@ public class Boid {
         g.setTransform(save);
     }
 
-    //!MODIFICATIONS///////////////////////////////
     static double maxForce = 0.2;
+    static double maxSpeed = 2;
+
+    static final double speedChangeValue = 10; //0.1
+    static final double forceChangeValue = 1; //0.05
+    static final double perceptionRadiusChangeValue = 100; //1
+
+    static double alignmentPerceptionRadius = 50;
+    static double alignmentMaxSpeed = maxSpeed;
+    static double alignmentMaxForce = maxForce;
+    static double cohesionPerceptionRadius = 100;
+    static double cohesionMaxSpeed = maxSpeed;
+    static double cohesionMaxForce = maxForce;
+    static double separationPerceptionRadius = 100;
+    static double separationMaxSpeed = maxSpeed;
+    static double separationMaxForce = maxForce;
+
+    //!General modifications
+    static void incrementMaxSpeed() { Boid.maxSpeed += speedChangeValue; }
+    static void decrementMaxSpeed() { Boid.maxSpeed -= speedChangeValue; }
+    static void incrementMaxForce() { Boid.maxForce += forceChangeValue; }
+    static void decrementMaxForce() { Boid.maxForce -= forceChangeValue; }
+    //!Alignment modifications
+    static void incremementAlignmentPerceptionRadius() { Boid.alignmentPerceptionRadius -= perceptionRadiusChangeValue; }
+    static void decrementAlignmentPerceptionRadius() { Boid.alignmentPerceptionRadius -= perceptionRadiusChangeValue; }
+    static void incrementAlignmentMaxSpeed() { Boid.alignmentMaxSpeed += speedChangeValue; }
+    static void decrementAlignmentMaxSpeed() { Boid.alignmentMaxSpeed -= speedChangeValue; }
+    static void incrementAlignmentMaxForce() { Boid.alignmentMaxForce += forceChangeValue; }
+    static void decrementAlignmentMaxForce() { Boid.alignmentMaxForce -= forceChangeValue; }
+    //!Cohesion modifications
+    static void incremementCohesionPerceptionRadius() { Boid.cohesionPerceptionRadius -= perceptionRadiusChangeValue; }
+    static void decrementCohesionPerceptionRadius() { Boid.cohesionPerceptionRadius -= perceptionRadiusChangeValue; }
+    static void incrementCohesionMaxSpeed() { Boid.cohesionMaxSpeed += speedChangeValue; }
+    static void decrementCohesionMaxSpeed() { Boid.cohesionMaxSpeed -= speedChangeValue; }
+    static void incrementCohesionMaxForce() { Boid.cohesionMaxForce += forceChangeValue; }
+    static void decrementCohesionMaxForce() { Boid.cohesionMaxForce -= forceChangeValue; }
+    //!Separation modifications
+    static void incremementSeparationPerceptionRadius() { Boid.separationPerceptionRadius -= perceptionRadiusChangeValue; }
+    static void decrementSeparationPerceptionRadius() { Boid.separationPerceptionRadius -= perceptionRadiusChangeValue; }
+    static void incrementSeparationMaxSpeed() { Boid.separationMaxSpeed += speedChangeValue; }
+    static void decrementSeparationMaxSpeed() { Boid.separationMaxSpeed -= speedChangeValue; }
+    static void incrementSeparationMaxForce() { Boid.separationMaxForce += forceChangeValue; }
+    static void decrementSeparationMaxForce() { Boid.separationMaxForce -= forceChangeValue; }
+
+    //!MODIFICATIONS///////////////////////////////
+    /*static double maxForce = 0.2;
     static double maxSpeed = 2;
 
     static final double speedChangeValue = 10; //0.1
@@ -395,7 +439,7 @@ public class Boid {
     static void incremementSeparationPerceptionRadius() { Boid.separationPerceptionRadius -= perceptionRadiusChangeValue; }
     static void decrementSeparationPerceptionRadius() { Boid.separationPerceptionRadius -= perceptionRadiusChangeValue; }
     static void incrementSeparationMaxForce() { Boid.separationMaxForce += forceChangeValue; }
-    static void decrementSeparationMaxForce() { Boid.separationMaxForce -= forceChangeValue; }
+    static void decrementSeparationMaxForce() { Boid.separationMaxForce -= forceChangeValue; }*/
 
     //!Discarded methods/variables
 
