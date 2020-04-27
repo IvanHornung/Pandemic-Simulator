@@ -27,13 +27,13 @@ public class Sound extends JFrame {
                 if(filename.startsWith("ambulance")) {
                     FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
                     // set the gain (between 0.0 and 1.0)
-                    double gain = 0.05;   
+                    double gain = 0.1;   
                     float dB = (float)(Math.log(gain) / Math.log(10.0) * 20.0);
                     gainControl.setValue(dB);
                 }
                 clip.start();
                 clip.loop((filename.equals("plague.wav") || filename.equals("ambience.wav") ||
-                            filename.startsWith("ambulance")) ? 20 : 0);
+                            filename.startsWith("ambulance")) ? 10 : 0);
 
             } catch (UnsupportedAudioFileException e) {
                 e.printStackTrace();
@@ -46,5 +46,6 @@ public class Sound extends JFrame {
     }
     public void stopSong(){
         clip.stop();
+        clip.flush();
     }
 }

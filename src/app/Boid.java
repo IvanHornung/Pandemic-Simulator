@@ -39,7 +39,7 @@ public class Boid {
     static Boid patient = null; static boolean lockedOn = false;
     double healTime = this.initialImmunity;
     int sirens = 0, sirenCount = 0;
-    Sound siren = null;
+    static Sound siren = null;
 
     public Boid() {
         if(!hasInfected) {
@@ -133,14 +133,19 @@ public class Boid {
             if(this.isParamedic && flock.get(i).healthStatus == DIAGNOSED) {
                 patient = flock.get(i);
                 lockedOn = true;
-                switch((int)(Math.random()*2)){
-                    case 0:
-                        siren = new Sound("ambulance.wav");
-                        break;
-                    case 1:
-                        siren = new Sound("ambulance2.wav");
-                        break;
-                }
+                // if((int)(Math.random()*2)==0)
+                //     siren = new Sound("ambulance.wav");
+                // else
+                //     siren = new Sound("ambulance2.wav");
+                if(siren==null)
+                    switch((int)(Math.random()*2)){
+                        case 0:
+                            siren = new Sound("ambulance.wav");
+                            break;
+                        case 1:
+                            siren = new Sound("ambulance2.wav");
+                            break; 
+                    }
                 break;
             }
             double dist = distance(this.position.xvalue, this.position.yvalue, flock.get(i).position.xvalue, flock.get(i).position.yvalue);
@@ -177,10 +182,10 @@ public class Boid {
                 } if(flock.get(i).isParamedic && this.healthStatus == DIAGNOSED && dist < 5) {
                     healTime--;
                     if(healTime <= 0) {
-                        this.hasDisease = false; //!Paramedic Work
+                        this.hasDisease = false; //!Paramedic Curing
                         this.isImmune = true;
-                        if(siren != null) 
-                            siren.stopSong();
+                        siren.stopSong();
+                        siren = null;
                         new Sound("treatment.wav");
                         this.healthStatus = RECOVERED;
                         this.immunity = this.immunityCap * (Math.random()*50+100);
@@ -242,6 +247,7 @@ public class Boid {
         int perceptionRadius = (int)separationPerceptionRadius;
         int total = 0;
         Vector steering = new Vector(0,0);
+        boolean emergencyServicePresent = false;
         for(Boid boid : flock) {
             double dist = distance(this.position.xvalue, this.position.yvalue, boid.position.xvalue, boid.position.yvalue);
             if(boid != this && dist < perceptionRadius && !(this.healthStatus == DIAGNOSED && boid.isParamedic)) {
@@ -251,8 +257,14 @@ public class Boid {
                 difference.divide(dist*dist); //or *1/x; inverselly proportional
                 if((boid.dead || (boid.healthStatus == DIAGNOSED && !this.isParamedic) || this.healthStatus == PARANOID || (boid.isParamedic && lockedOn)) && !this.isParamedic){
                     difference.multiply(Math.random()*5+((boid.isParamedic && lockedOn)?80:20));
-                } if(this.isParamedic && boid.isParamedic)
-                    difference.multiply(10);
+                } if(this.isParamedic && boid.isParamedic && lockedOn 
+                        && distance(this.position.xvalue, this.position.yvalue, patient.position.xvalue, boid.position.yvalue) > 150 && dist < 5) {
+                    difference.multiply(15);
+                    //if(dist < 100)
+                     //   difference.divide(20);
+                }
+                if(boid.isParamedic && lockedOn && !this.isParamedic)
+                    emergencyServicePresent = true;
                 // } if(this.healthStatus == PARANOID)
                 //     difference.multiply(50);
                 steering.add(difference);
@@ -262,9 +274,9 @@ public class Boid {
         }
         if(total > 0) {
             steering.divide((double)total);
-            steering.setMagnitude(((total > 40) ? separationMaxSpeed*2 : ((this.healthStatus == PARANOID)? separationMaxSpeed*5:separationMaxSpeed)));
+            steering.setMagnitude(((total > 40 || emergencyServicePresent) ? separationMaxSpeed*((emergencyServicePresent)?6:2) : ((this.healthStatus == PARANOID)? separationMaxSpeed*5:separationMaxSpeed)));
             steering.subtract(this.velocity);
-            steering.limit(((total > 40) ? separationMaxForce*2 : ((this.healthStatus == PARANOID)? separationMaxForce*5:separationMaxForce)));
+            steering.limit(((total > 40 || emergencyServicePresent) ? separationMaxForce*((emergencyServicePresent)?6:2) : ((this.healthStatus == PARANOID)? separationMaxForce*5:separationMaxForce)));
         }
         return steering;
     }

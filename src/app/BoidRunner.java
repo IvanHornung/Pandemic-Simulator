@@ -99,7 +99,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                     new Sound("paranoiaEnded.wav");
                 }
             }
-            if(paramedicCount == 0 && diagnosedCount != 0) {
+            if(paramedicCount <= 2 && diagnosedCount != 0) {
                 flock.add(new Boid(true));
                 new Sound("ambulance.wav");
             }
@@ -315,6 +315,10 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
             new Sound("bell.wav");
         if(event.getKeyCode() == KeyEvent.VK_N)
             new Sound("ambulance.wav");
+        if(event.getKeyCode() == KeyEvent.VK_SLASH)
+            music.stopSong();
+        if(event.getKeyCode() == KeyEvent.VK_PERIOD)
+            new Sound("plague.wav");
         
     }
 
