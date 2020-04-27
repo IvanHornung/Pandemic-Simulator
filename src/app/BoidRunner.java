@@ -91,7 +91,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                     flock.get(i).PARAMEDIC = Color.BLUE;
                     flock.get(i).healthStatus = flock.get(i).PARAMEDIC;
                 }
-                if((int)(Math.random()*healthyCount*2000+((healthyCount == 0)?1:0)) == 0 && !flock.get(i).hasDisease && diagnosedCount >= 3 && flock.get(i).healthStatus != Boid.PARANOID && paranoidCount <= 10) {
+                if((int)(Math.random()*healthyCount*2000+((healthyCount == 0)?1:0)) == 0 && !flock.get(i).hasDisease && diagnosedCount >= 3 && flock.get(i).healthStatus != Boid.PARANOID && paranoidCount <= 15) {
                     flock.get(i).healthStatus = Boid.PARANOID;
                     new Sound("paranoia.wav");
                 } if(recoveryCount >= 800 && flock.get(i).healthStatus == Boid.PARANOID && (int)(int)(Math.random()*totalInfected*200+((totalInfected == 0)?1:0)) == 0 ) {
