@@ -258,19 +258,93 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         //!General
         if(event.getKeyCode()==KeyEvent.VK_UP) 
             Boid.incrementMaxSpeed();
-        if(event.getKeyCode()==KeyEvent.VK_DOWN)
+        else if(event.getKeyCode()==KeyEvent.VK_DOWN)
             Boid.decrementMaxSpeed();
+        //!Alignment
+        else if(event.getKeyCode()==KeyEvent.VK_S)
+            Boid.decrementAlignmentPerceptionRadius();
+        else if(event.getKeyCode() == KeyEvent.VK_P)
+            Boid.incrementSeparationMaxForce();
+        else if(event.getKeyCode() == KeyEvent.VK_SEMICOLON)
+            Boid.decrementSeparationMaxForce();
+        //!Toggles
+        else if(event.getKeyCode() == KeyEvent.VK_Q)
+            toggleCounts(true);
+        else if(event.getKeyCode() == KeyEvent.VK_E)
+            toggleCounts(false);
+        else if(event.getKeyCode() == KeyEvent.VK_W)
+            Sound.tickOff = !Sound.tickOff;
+        //!Sounds
+        else if(event.getKeyCode() == KeyEvent.VK_B)
+            new Sound("bell.wav");
+        else if(event.getKeyCode() == KeyEvent.VK_N)
+            new Sound("ambulance.wav");
+        else if(event.getKeyCode() == KeyEvent.VK_SLASH)
+            music.stopSong();
+        else if(event.getKeyCode() == KeyEvent.VK_PERIOD)
+            new Sound("plague.wav");
+
+        //!Demonstations
+        else if(event.getKeyCode() == KeyEvent.VK_BACK_SLASH) { //Clear grid
+            new Sound("bell.wav");
+            for(int i = 0; i < flock.size(); i++) {
+                flock.remove(i);
+                i--;
+            }
+        }
+        else if(event.getKeyCode() == KeyEvent.VK_R) { //Add healthy
+            new Sound("recovery.wav");
+            flock.add(new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), false));
+        }
+        else if(event.getKeyCode() == KeyEvent.VK_F) { //Add infected
+            new Sound("recovery.wav");
+            flock.add(new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), true));
+        }
+        else if(event.getKeyCode() == KeyEvent.VK_T) { //Add infected
+            new Sound("recovery.wav");
+            flock.add(new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), false));
+            
+        }
+        else if(event.getKeyCode() == KeyEvent.VK_F) { //Add infected
+            new Sound("recovery.wav");
+            flock.add(new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), true));
+        }
+        else if(event.getKeyCode() == KeyEvent.VK_F) { //Add infected
+            new Sound("recovery.wav");
+            flock.add(new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), true));
+        }
+        
+    }
+
+    public void keyTyped(KeyEvent event) {}
+
+    public void mousePressed(MouseEvent event) {
+        mouseXPosition = event.getX();   
+        mouseYPosition = event.getY();
+        addedNewBoid = true;
+    }
+
+    //required for compiling; do not use
+    public void mouseClicked( MouseEvent event ) {}
+
+    public void mouseReleased( MouseEvent event ) {}
+
+    public void mouseEntered( MouseEvent event ) {}
+
+    public void mouseExited( MouseEvent event ) {}
+    // MouseMotionListener: constantly update whenever mouse is moved
+    public void mouseMoved(MouseEvent event) {}
+
+    public void mouseDragged(MouseEvent event) {}
+
+    //!Discarded KeyListener statements
         //if(event.getKeyCode() == KeyEvent.VK_Q)
         //    Boid.incrementMaxForce();
         //if(event.getKeyCode() == KeyEvent.VK_A)
         //    Boid.decrementMaxForce();
-
-        //!Alignment
         //if(event.getKeyCode()==KeyEvent.VK_W) 
         //    Boid.incremementAlignmentPerceptionRadius();
-        if(event.getKeyCode()==KeyEvent.VK_S)
-            Boid.decrementAlignmentPerceptionRadius();
-        if(event.getKeyCode() == KeyEvent.VK_E)
+        /*if(event.getKeyCode() == KeyEvent.VK_E)
             Boid.incrementAlignmentMaxSpeed();
         if(event.getKeyCode() == KeyEvent.VK_D)
             Boid.decrementAlignmentMaxSpeed();
@@ -299,49 +373,5 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         if(event.getKeyCode() == KeyEvent.VK_O)
             Boid.incrementSeparationMaxSpeed();
         if(event.getKeyCode() == KeyEvent.VK_L)
-            Boid.decrementSeparationMaxSpeed();
-        if(event.getKeyCode() == KeyEvent.VK_P)
-            Boid.incrementSeparationMaxForce();
-        if(event.getKeyCode() == KeyEvent.VK_SEMICOLON)
-            Boid.decrementSeparationMaxForce();
-        //!Toggles
-        if(event.getKeyCode() == KeyEvent.VK_Q)
-            toggleCounts(true);
-        if(event.getKeyCode() == KeyEvent.VK_E)
-            toggleCounts(false);
-        if(event.getKeyCode() == KeyEvent.VK_W)
-            Sound.tickOff = !Sound.tickOff;
-
-        if(event.getKeyCode() == KeyEvent.VK_B)
-            new Sound("bell.wav");
-        if(event.getKeyCode() == KeyEvent.VK_N)
-            new Sound("ambulance.wav");
-        if(event.getKeyCode() == KeyEvent.VK_SLASH)
-            music.stopSong();
-        if(event.getKeyCode() == KeyEvent.VK_PERIOD)
-            new Sound("plague.wav");
-        
-    }
-
-    public void keyTyped(KeyEvent event) {}
-
-    public void mousePressed(MouseEvent event) {
-        mouseXPosition = event.getX();   
-        mouseYPosition = event.getY();
-        addedNewBoid = true;
-    }
-
-    //required for compiling; do not use
-    public void mouseClicked( MouseEvent event ) {}
-
-    public void mouseReleased( MouseEvent event ) {}
-
-    public void mouseEntered( MouseEvent event ) {}
-
-    public void mouseExited( MouseEvent event ) {}
-    // MouseMotionListener: constantly update whenever mouse is moved
-    public void mouseMoved(MouseEvent event) {}
-
-    public void mouseDragged(MouseEvent event) {}
+            Boid.decrementSeparationMaxSpeed();*/
 }
-
