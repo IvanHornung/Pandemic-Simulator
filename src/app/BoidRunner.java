@@ -275,6 +275,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         else if(event.getKeyCode() == KeyEvent.VK_W)
             Sound.tickOff = !Sound.tickOff;
         //!Sounds
+        //Decorative
         else if(event.getKeyCode() == KeyEvent.VK_B)
             new Sound("bell.wav");
         else if(event.getKeyCode() == KeyEvent.VK_N)
@@ -282,8 +283,28 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         else if(event.getKeyCode() == KeyEvent.VK_SLASH)
             music.stopSong();
         else if(event.getKeyCode() == KeyEvent.VK_PERIOD)
-            new Sound("plague.wav");
-
+            music = new Sound("plague.wav");
+        //Demonstrative
+        else if(event.getKeyCode() == KeyEvent.VK_1)
+            new Sound("newpatient.wav");
+        else if(event.getKeyCode() == KeyEvent.VK_2)
+            new Sound("recovery.wav");
+        else if(event.getKeyCode() == KeyEvent.VK_3)
+            new Sound("immunitylost.wav");
+        else if(event.getKeyCode() == KeyEvent.VK_4)
+            new Sound("death.wav");
+        else if(event.getKeyCode() == KeyEvent.VK_5)
+            new Sound("diagnosis.wav");
+        else if(event.getKeyCode() == KeyEvent.VK_6)
+            new Sound("paranoia.wav");
+        else if(event.getKeyCode() == KeyEvent.VK_7)
+            new Sound("paranoiaEnded.wav");
+        else if(event.getKeyCode() == KeyEvent.VK_8)
+            new Sound("treatment.wav");
+        else if(event.getKeyCode() == KeyEvent.VK_9)
+            new Sound("deathmilestone.wav");
+        else if(event.getKeyCode() == KeyEvent.VK_0)
+            new Sound("intensity.wav");
         //!Demonstations
         else if(event.getKeyCode() == KeyEvent.VK_BACK_SLASH) { //Clear grid
             new Sound("bell.wav");
