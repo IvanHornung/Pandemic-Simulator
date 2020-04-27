@@ -65,7 +65,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                     totalInfected++;
                 else if(flock.get(i).healthStatus == Boid.RECOVERED)
                     recoveryCount++;
-                else if(flock.get(i).healthStatus == Boid.DIAGNOSED)
+                else if(flock.get(i).healthStatus == flock.get(i).DIAGNOSED)
                     diagnosedCount++;
                 else if(flock.get(i).healthStatus == Boid.PARANOID)
                     paranoidCount++;
@@ -85,7 +85,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                         else if(flock.get(i).sirens==1)
                             flock.get(i).PARAMEDIC = Color.WHITE;
                         else if(flock.get(i).sirens == 2)
-                        flock.get(i).PARAMEDIC = Color.RED;
+                            flock.get(i).PARAMEDIC = Color.RED;
                         flock.get(i).healthStatus = flock.get(i).PARAMEDIC;
                     } if(flock.get(i).sirens > 2) flock.get(i).sirens = -1;
                 } else if(flock.get(i).isParamedic && flock.get(i).PARAMEDIC != Color.BLUE) {

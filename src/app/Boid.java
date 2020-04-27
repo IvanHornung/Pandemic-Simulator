@@ -28,17 +28,18 @@ public class Boid {
     double immunityCap = immunity, initialImmunity = immunity;
     double lifeSpan = (Math.random()*300+500)*2;
     double initialLifeSpan = lifeSpan;
-    boolean dead = false;
+    boolean dead = false, diagnosed = false;
     double deathAngle = 0;
     static int mortalityRate = 14;
     static Color RECOVERED = new Color(101,194,255), DEAD = new Color(154, 74, 178), 
-                HEALTHY = Color.WHITE, INFECTED = Color.RED, DIAGNOSED = new Color(134, 0 , 0), PARANOID = new Color(174,243,177);
-    Color PARAMEDIC = Color.BLUE;
+                HEALTHY = Color.WHITE, INFECTED = Color.RED,  PARANOID = new Color(174,243,177);// DIAGNOSED = new Color(134, 0 , 0);
+    Color PARAMEDIC = Color.BLUE, DIAGNOSED = new Color(134, 0 , 0);
     double immunityLife;
     boolean isImmune = false, isParamedic = false;
     static Boid patient = null; static boolean lockedOn = false;
     double healTime = this.initialImmunity;
     int sirens = 0, sirenCount = 0;
+    static int patientBlink = 0, patientBlinkCount = 0;
     static Sound siren = null;
 
     public Boid() {
@@ -103,7 +104,7 @@ public class Boid {
                 } else {
                     this.hasDisease = false; //!Recovery
                     this.isImmune = true;
-                    if(this.healthStatus==DIAGNOSED) {
+                    if(this.diagnosed) {
                         patient = null;
                         lockedOn = false;
                     }
@@ -130,7 +131,7 @@ public class Boid {
         } //!Alignment
         if(!this.isParamedic || (this.isParamedic && !lockedOn)) 
         for(int i = 0; i < flock.size(); i++) {
-            if(this.isParamedic && flock.get(i).healthStatus == DIAGNOSED) {
+            if(this.isParamedic && flock.get(i).diagnosed) {
                 patient = flock.get(i);
                 lockedOn = true;
                 // if((int)(Math.random()*2)==0)
@@ -138,19 +139,22 @@ public class Boid {
                 // else
                 //     siren = new Sound("ambulance2.wav");
                 if(siren==null)
-                    switch((int)(Math.random()*2)){
+                    switch((int)(Math.random()*3)){
                         case 0:
                             siren = new Sound("ambulance.wav");
                             break;
                         case 1:
                             siren = new Sound("ambulance2.wav");
                             break; 
+                        case 2:
+                            siren = new Sound("ambulance3.wav");
+                            break;
                     }
                 break;
             }
             double dist = distance(this.position.xvalue, this.position.yvalue, flock.get(i).position.xvalue, flock.get(i).position.yvalue);
             if(flock.get(i) != this && dist < perceptionRadius) {
-                if(!(this.healthStatus == DIAGNOSED && flock.get(i).isParamedic)) {
+                if(!(this.diagnosed && flock.get(i).isParamedic)) {
                     steering.add(flock.get(i).velocity);
                     total++;
                 }
@@ -171,19 +175,22 @@ public class Boid {
                     else {//!Immunity loss
                         if((int)(Math.random()*40000)==0) {
                             this.healthStatus = DIAGNOSED; //!Diagnosis
+                            this.diagnosed = true;
                             new Sound("diagnosis.wav");
                         }
-                        flock.get(i).immunity -= (1/dist)*((BoidRunner.totalInfected > 35) ? 1 : ((BoidRunner.totalInfected > 11) ? 2.5 : ((BoidRunner.totalInfected < 5) ? 4.5 : 3.5)));
+                        flock.get(i).immunity -= (1/dist)*((BoidRunner.totalInfected > 35) ? 1 : ((BoidRunner.totalInfected > 11) 
+                                                 ? 2.5 : ((BoidRunner.totalInfected < 5) ? (BoidRunner.totalInfected < 2 ? 5.5: 4) : 3.5)));
                     }
                 } else if(!this.hasDisease && !flock.get(i).hasDisease && flock.get(i).immunity < flock.get(i).immunityCap && !flock.get(i).isImmune) {
                     flock.get(i).immunity += (Math.random()*5+1)/((BoidRunner.totalInfected > 35) ? 10000 : 100);
                     if(flock.get(i).immunity > flock.get(i).immunityCap)
                        flock.get(i).immunity = flock.get(i).immunityCap; //!Immunity gain
-                } if(flock.get(i).isParamedic && this.healthStatus == DIAGNOSED && dist < 5) {
+                } if(flock.get(i).isParamedic && this.diagnosed && dist < 5) {
                     healTime--;
                     if(healTime <= 0) {
                         this.hasDisease = false; //!Paramedic Curing
                         this.isImmune = true;
+                        this.diagnosed = false;
                         siren.stopSong();
                         siren = null;
                         new Sound("treatment.wav");
@@ -250,12 +257,12 @@ public class Boid {
         boolean emergencyServicePresent = false;
         for(Boid boid : flock) {
             double dist = distance(this.position.xvalue, this.position.yvalue, boid.position.xvalue, boid.position.yvalue);
-            if(boid != this && dist < perceptionRadius && !(this.healthStatus == DIAGNOSED && boid.isParamedic)) {
+            if(boid != this && dist < perceptionRadius && !(this.diagnosed && boid.isParamedic)) {
                 Vector difference = new Vector(this.position.xvalue, this.position.yvalue);
                 difference.subtract(boid.position);
                 if(dist == 0.0) dist += 0.001;
                 difference.divide(dist*dist); //or *1/x; inverselly proportional
-                if((boid.dead || (boid.healthStatus == DIAGNOSED && !this.isParamedic) || this.healthStatus == PARANOID || (boid.isParamedic && lockedOn)) && !this.isParamedic){
+                if((boid.dead || (boid.diagnosed && !this.isParamedic) || this.healthStatus == PARANOID || (boid.isParamedic && lockedOn)) && !this.isParamedic){
                     difference.multiply(Math.random()*5+((boid.isParamedic && lockedOn)?80:20));
                 } if(this.isParamedic && boid.isParamedic && lockedOn 
                         && distance(this.position.xvalue, this.position.yvalue, patient.position.xvalue, boid.position.yvalue) > 150 && dist < 5) {
@@ -313,6 +320,21 @@ public class Boid {
         this.velocity.limit(maxSpeed);//*((this.isParamedic && lockedOn)?20:1));
         if(this.dead && deathAngle == 0) {
             deathAngle = this.velocity.dir() + Math.PI/2;
+        }
+        if(patient == this && lockedOn) {
+            patientBlinkCount++;
+            if(patientBlinkCount % 4 == 0) {
+                patientBlink++;
+                switch(patientBlink) {
+                    case 0 :
+                        this.DIAGNOSED = new Color(252, 52, 52);//new Color(245,83,83);
+                        break;
+                    case 1 :
+                        this.DIAGNOSED = new Color(134, 0 , 0);
+                        break;
+                } patient.healthStatus = this.DIAGNOSED;
+                if(patientBlink > 1) patientBlink = -1;
+            }
         }
     }
 
