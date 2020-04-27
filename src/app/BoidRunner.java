@@ -6,6 +6,7 @@ import java.util.*;
 import java.awt.event.*;
 
 public class BoidRunner extends JPanel implements KeyListener, MouseListener, MouseMotionListener  {
+    private static final long serialVersionUID = -8716187417647724411L;
     public static final int WIDTH = 1920;
     public static final int HEIGHT = 1080;
     static ArrayList<Boid> flock = new ArrayList<Boid>();
