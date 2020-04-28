@@ -92,6 +92,7 @@ public class Boid {
     public Boid(int type) {
         this.position = new Vector((int)(BoidRunner.WIDTH)/2,(int)(BoidRunner.HEIGHT)/2);
         this.velocity = new Vector(0,0);
+        this.acceleration = new Vector(0,0);
         switch(type) {
             case 1:
                 this.healthStatus = Boid.HEALTHY;
@@ -397,6 +398,12 @@ public class Boid {
         g.fill(shape);
         g.draw(shape);
         g.setTransform(save);
+    }
+
+    public static void pause() {
+        try{
+            Thread.sleep(3000);
+        } catch(InterruptedException e) {}
     }
 
     static double maxForce = 0.2;

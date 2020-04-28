@@ -362,9 +362,12 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
             addedBoids.add(paranoidBoid);
         }
         else if(event.getKeyCode() == KeyEvent.VK_Z)
-            addedBoids.add(new Boid(1));
+            addedBoids.add(new Boid(5));
+        //else if(event.getKeyCode() == KeyEvent.VK_BACK_QUOTE)
+        //    Boid.pause();
     }
     boolean clearGrid = false;
+
 
     public void keyTyped(KeyEvent event) {}
 
