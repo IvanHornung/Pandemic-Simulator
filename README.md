@@ -19,6 +19,7 @@ Marked with a **white** color.
 * If a Boid's immunity level reaches zero, the Boid becomes <span style="color:red">**infected**</span>.
 * If a Boid is healthy, it gains immunity from each other healthy Boid within its perception radius by a value that is inversely proportional to the distance between them. This is one of the herd immunity principles in this simulation.
 * All together, they behave as a peaceful and undisturbed flock.
+* Once in a while, a new, healthy, community member joins the grid. New healthy community members are also summoned when a dead Boid's body is cleared.
 
 
 
