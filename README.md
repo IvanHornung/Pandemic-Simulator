@@ -1,11 +1,17 @@
 # Pandemic Simulator
 ##### by Ivan Hornung
+>Comments/explainations to the source code to be released soon.
 * * *
 ## About
+
+With COVID-19 terrorizing the world, I decided to create a simulative environment that would demonstrate coronavirus-like conditions and traits. This simulator implements artificial life creatures, Boids, to realistically simulate disease spread. One may need to adjust the initial Boid count depending on the device (default: 1200).
 >Work in progress
 - - -
 ## Boids
-Boids are artificial life objects first developed by [Craig Reynolds in 1986](https://www.red3d.com/cwr/boids/ "Craig Reynolds Boids article") that mimic the behavior of bird flocks or fish schools.
+Boids are artificial life objects first developed by [Craig Reynolds in 1986](https://www.red3d.com/cwr/boids/ "Craig Reynolds Boids article") that mimic the behavior of bird flocks or fish schools. They contain three basic steering mechanics:
+* Alignment - steer to match the average velocity of its neighboring Boids.
+* Cohesion - steer toward the average position of its neighboring Boids.
+* Separation - keep a distance from each Boid to prevent crowding.
 > Work in progress 
 
 ## Types of Boids
