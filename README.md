@@ -49,7 +49,7 @@ Marked with a **<span style="color:rgb(101,194,255);">light blue</span>** color.
 * A recovered Boid is not considered to be healthy count-wise.
 
 ### **<span style="color:rgb(154, 74, 178);">Dead</span>**
-<img src="https://i.imgur.com/DrPGzOc.png" height="163" width="252"> <img src="https://im3.ezgif.com/tmp/ezgif-3-0fec4ac4f74e.gif" height="163" width="252"> <img src="https://media.giphy.com/media/L11x1x4tUj7oPTLJaM/giphy.gif" height="163" width="252">
+<img src="https://i.imgur.com/DrPGzOc.png" height="163" width="252"> <img src="https://media.giphy.com/media/fZ8tL6AcqlyYkG3Xgh/giphy.gif" height="163" width="252"> <img src="https://media.giphy.com/media/L11x1x4tUj7oPTLJaM/giphy.gif" height="163" width="252">
 
 Marked with a **<span style="color:rgb(154, 74, 178);">purple</span>** color.
 
@@ -59,7 +59,7 @@ Marked with a **<span style="color:rgb(154, 74, 178);">purple</span>** color.
 * All Boids try to avoid dead Boids (except for on-duty **<span style="color:blue">paramedics</span>**).
 
 ### **<span style="color:rgb(134,0,0);">Diagnosed</span>**
-<img src="https://i.imgur.com/JuS4vik.png" height="163" width="252"> <img src="https://im3.ezgif.com/tmp/ezgif-3-d9b78868a3db.gif" height="163" width="252"> <img src="https://media.giphy.com/media/WsM1ZoPUjZTeI73c78/giphy.gif" height="163" width="252"> 
+<img src="https://i.imgur.com/JuS4vik.png" height="163" width="252"> <img src="https://media.giphy.com/media/iJmMYBWi0HX3P6CxTJ/giphy.gif" height="163" width="252"> <img src="https://media.giphy.com/media/WsM1ZoPUjZTeI73c78/giphy.gif" height="163" width="252"> 
 
 Marked with a <span style="color:rgb(134,0,0);">**dark red**</span> color.
 * There is a chance that an **<span style="color:red">**infected**</span>** Boid becomes <span style="color:rgb(134,0,0);">**diagnosed**</span> within its infection lifetime.
