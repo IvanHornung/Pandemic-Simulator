@@ -89,6 +89,34 @@ public class Boid {
         }
     }
 
+    public Boid(int type) {
+        this.position = new Vector((int)(BoidRunner.WIDTH)/2,(int)(BoidRunner.HEIGHT)/2);
+        this.velocity = new Vector(0,0);
+        switch(type) {
+            case 1:
+                this.healthStatus = Boid.HEALTHY;
+                break;
+            case 2:
+                this.healthStatus = Boid.INFECTED;
+                break;
+            case 3:
+                this.healthStatus = Boid.RECOVERED;
+                break;
+            case 4:
+                this.healthStatus = Boid.DEAD;
+                break;
+            case 5:
+                this.healthStatus = Boid.PARANOID;
+                break;
+            case 6:
+                this.healthStatus = PARAMEDIC;
+                break;
+            case 7:
+                this.healthStatus = DIAGNOSED;
+                break;
+        }
+    }
+
     Vector align(ArrayList<Boid> flock) {
         int perceptionRadius = (int)(alignmentPerceptionRadius);
         int total = 0;

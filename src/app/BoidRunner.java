@@ -75,7 +75,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                     flock.remove(i);
                     i--;
                     toAdd++;
-                } else if(flock.get(i).isParamedic && totalInfected <= flock.size()*0.5 && (int)(Math.random()*(flock.size()-totalInfected))*6000 == 0) {
+                } else if(flock.get(i).isParamedic && totalInfected <= flock.size()*0.25 && (int)(Math.random()*10000*(flock.size()-totalInfected)) == 0) {
                     flock.remove(i);
                     i--;
                     toAdd++;
@@ -361,6 +361,8 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
             paranoidBoid.healthStatus = Boid.PARANOID;
             addedBoids.add(paranoidBoid);
         }
+        else if(event.getKeyCode() == KeyEvent.VK_Z)
+            addedBoids.add(new Boid(1));
     }
     boolean clearGrid = false;
 
