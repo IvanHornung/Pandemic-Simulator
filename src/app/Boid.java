@@ -316,17 +316,7 @@ public class Boid {
                      Boid.travelTime++;       //about one every cycle, have it be a 1/paramedicCount chance for the traveltime to increase
                 Vector emergencyVelocity = this.velocity.setMagnitude(this.velocity.getMagnitude()*2+((Boid.travelTime > 20)?Boid.travelTime/200:1));
                 this.position.add(emergencyVelocity); 
-            } /*else if(this.isParamedic && lockedOn && patientDistance < 10) {
-                if((int)(Math.random()*BoidRunner.paramedicCount) == 0)
-                     Boid.travelTime++;
-                Vector decelerativeEmergencyVelocity = this.velocity.setMagnitude(this.velocity.getMagnitude()-Math.sqrt(patientDistance));
-                   // Math.pow((patientDistance-1),2)/((patientDistance > 0)?Math.pow(patientDistance, 2):1)*2*Boid.travelTime/100); //deceleration
-                if(decelerativeEmergencyVelocity.movement() < 0 || this.velocity.movement() < 0) {
-                    decelerativeEmergencyVelocity.set(0,0);
-                    this.velocity.set(0,0);
-                }
-                this.position.add(decelerativeEmergencyVelocity);
-            }*/
+            }
             else
                 this.position.add(this.velocity);
         }

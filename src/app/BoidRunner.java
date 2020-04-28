@@ -75,6 +75,11 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                     flock.remove(i);
                     i--;
                     toAdd++;
+                } else if(flock.get(i).isParamedic && totalInfected <= flock.size()*0.5 && (int)(Math.random()*(flock.size()-totalInfected))*6000 == 0) {
+                    flock.remove(i);
+                    i--;
+                    toAdd++;
+                    new Sound("bell.wav");
                 }
                 else if(flock.get(i).isParamedic && Boid.lockedOn) {
                     flock.get(i).sirenCount++;
@@ -125,6 +130,9 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
             else if(totalInfected >= (int)(flock.size()*0.8) && !intensityPlayed) {
                 new Sound("intensity.wav");
                 intensityPlayed = !intensityPlayed;
+            }
+            if(totalInfected >= (int)(flock.size()*0.8) && (int)(Math.random()*(recoveryCount+healthyCount)*1000) == 0) {
+
             }
             if(deathCount >= 100) {
                 if(!milestonePlayed && deathCount % 100 == 0) {
@@ -337,11 +345,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         }
         else if(event.getKeyCode() == KeyEvent.VK_Y) { //Add paramedic
             new Sound("recovery.wav");
-            Boid paramedicBoid = new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), false);
-            paramedicBoid.isParamedic = true;
-            paramedicBoid.healthStatus = paramedicBoid.PARAMEDIC;
-            paramedicBoid.immunity = 2000;
-            addedBoids.add(paramedicBoid);
+            addedBoids.add(new Boid(true));
         }
         else if(event.getKeyCode() == KeyEvent.VK_H) { //Add diagnosed
             new Sound("recovery.wav");
