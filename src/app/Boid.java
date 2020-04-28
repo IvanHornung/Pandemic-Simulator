@@ -39,6 +39,7 @@ public class Boid {
     static Boid patient = null; static boolean lockedOn = false;
     double healTime = this.initialImmunity;
     int sirens = 0, sirenCount = 0;
+    static int travelTime = 0;
     static int patientBlink = 0, patientBlinkCount = 0;
     static Sound siren = null;
 
@@ -114,6 +115,14 @@ public class Boid {
                     this.immunity = this.immunityCap * (Math.random()*50+100);
                     this.immunityCap = this.immunity;
                     this.immunityLife = initialLifeSpan*(6*(Math.random()*0.8+0.5)); //12*..
+                    if(this.diagnosed) {
+                        this.diagnosed = false;
+                        if(this == patient) {
+                            Boid.travelTime = 0;
+                            siren.stopSong();
+                            siren = null;
+                        }
+                    }
                 }
             }
         } else if(this.isImmune) { //!Immunity loss
@@ -131,13 +140,9 @@ public class Boid {
         } //!Alignment
         if(!this.isParamedic || (this.isParamedic && !lockedOn)) 
         for(int i = 0; i < flock.size(); i++) {
-            if(this.isParamedic && flock.get(i).diagnosed) {
+            if(this.isParamedic && flock.get(i).diagnosed) { //!Lock on
                 patient = flock.get(i);
                 lockedOn = true;
-                // if((int)(Math.random()*2)==0)
-                //     siren = new Sound("ambulance.wav");
-                // else
-                //     siren = new Sound("ambulance2.wav");
                 if(siren==null)
                     switch((int)(Math.random()*3)){
                         case 0:
@@ -173,7 +178,7 @@ public class Boid {
                         }
                     }
                     else {//!Immunity loss
-                        if((int)(Math.random()*40000)==0) {
+                        if((int)(Math.random()*40000)==0 && !this.diagnosed) { //prevent double diagnoses while diagnosed
                             this.healthStatus = DIAGNOSED; //!Diagnosis
                             this.diagnosed = true;
                             new Sound("diagnosis.wav");
@@ -200,13 +205,13 @@ public class Boid {
                         this.immunityLife = initialLifeSpan*(6*(Math.random()*0.8+0.5));
                         lockedOn = false;
                         patient = null;
+                        Boid.travelTime = 0;
                     }
                 }
                     
             }
-        } //if(this.isParamedic && lockedOn && patient.velocity.movement() != 0)
-           // steering.add(patient.velocity);
-        if(total > 0) {//|| (this.isParamedic && lockedOn && patient.velocity.movement() != 0))
+        }
+        if(total > 0) {
             if(total > 0)
                 steering.divide((double)total);
             //else
@@ -242,10 +247,6 @@ public class Boid {
             steering.setMagnitude(((cohesionMaxSpeed != maxSpeed) ? cohesionMaxSpeed : maxSpeed));
             steering.subtract(this.velocity);
             steering.limit(((this.isParamedic && lockedOn)?cohesionMaxForce*3:(cohesionMaxForce != maxForce) ? cohesionMaxForce : maxForce));
-            //if(this.isParamedic && lockedOn)
-            //    steering.setMagnitude(maxSpeed*3);
-            //else
-            //    steering.multiply(50);
         }
         return steering;
     }
@@ -311,13 +312,26 @@ public class Boid {
     void update() {
         if(!this.dead) {
             if(this.isParamedic && lockedOn && patientDistance >= 10) {
-                Vector emergencyVelocity = this.velocity.setMagnitude(this.velocity.getMagnitude()*2);//*(1.2 + ((1/3+1/4)/2)-0.02));
-                this.position.add(emergencyVelocity);
-            } else
+                if((int)(Math.random()*BoidRunner.paramedicCount) == 0) //since travelTime is static and you only want to increase it by
+                     Boid.travelTime++;       //about one every cycle, have it be a 1/paramedicCount chance for the traveltime to increase
+                Vector emergencyVelocity = this.velocity.setMagnitude(this.velocity.getMagnitude()*2+((Boid.travelTime > 20)?Boid.travelTime/200:1));
+                this.position.add(emergencyVelocity); 
+            } else if(this.isParamedic && lockedOn && patientDistance < 10) {
+                if((int)(Math.random()*BoidRunner.paramedicCount) == 0)
+                     Boid.travelTime++;
+                Vector decelerativeEmergencyVelocity = this.velocity.setMagnitude(this.velocity.getMagnitude()-Math.sqrt(patientDistance));
+                   // Math.pow((patientDistance-1),2)/((patientDistance > 0)?Math.pow(patientDistance, 2):1)*2*Boid.travelTime/100); //deceleration
+                if(decelerativeEmergencyVelocity.movement() < 0 || this.velocity.movement() < 0) {
+                    decelerativeEmergencyVelocity.set(0,0);
+                    this.velocity.set(0,0);
+                }
+                this.position.add(decelerativeEmergencyVelocity);
+            }
+            else
                 this.position.add(this.velocity);
         }
         this.velocity.add(this.acceleration);
-        this.velocity.limit(maxSpeed);//*((this.isParamedic && lockedOn)?20:1));
+        this.velocity.limit(maxSpeed);
         if(this.dead && deathAngle == 0) {
             deathAngle = this.velocity.dir() + Math.PI/2;
         }

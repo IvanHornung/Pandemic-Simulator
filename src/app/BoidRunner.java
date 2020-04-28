@@ -118,11 +118,11 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                 flock.add(new Boid(true));
                 new Sound("ambulance.wav");
             }
-            if(!intensityPlayed && flock.size()>=1300 && (flock.size()+1)%100 == 0) 
+            if(!intensityPlayed && (flock.size()+1)%100 == 0) 
                 intensityPlayed = true;
             if(totalInfected == 0)
                 flock.add(new Boid((int)(Math.random()*WIDTH), (int)(Math.random()*HEIGHT), true));
-            else if(totalInfected >= 1100 && !intensityPlayed) {
+            else if(totalInfected >= (int)(flock.size()*0.8) && !intensityPlayed) {
                 new Sound("intensity.wav");
                 intensityPlayed = !intensityPlayed;
             }
@@ -345,6 +345,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         }
         else if(event.getKeyCode() == KeyEvent.VK_H) { //Add diagnosed
             new Sound("recovery.wav");
+            new Sound("diagnosis.wav");
             Boid diagnosedBoid = new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), true);
             diagnosedBoid.diagnosed = true;
             diagnosedBoid.healthStatus = diagnosedBoid.DIAGNOSED;
@@ -352,7 +353,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         }
         else if(event.getKeyCode() == KeyEvent.VK_U) { //Add paranoid
             new Sound("recovery.wav");
-            Boid paranoidBoid = new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), true);
+            Boid paranoidBoid = new Boid((int)((Math.random()*0.2+0.9)*WIDTH/2),(int)((Math.random()*0.2+0.9)*HEIGHT/2), false);
             paranoidBoid.healthStatus = Boid.PARANOID;
             addedBoids.add(paranoidBoid);
         }
