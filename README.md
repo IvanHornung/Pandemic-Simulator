@@ -7,22 +7,23 @@
 
 With COVID-19 terrorizing the world, I decided to create a simulative environment that would demonstrate coronavirus-like conditions and traits. This simulator implements artificial life creatures, Boids, to realistically simulate disease spread. 
 
-One may need to adjust the initial Boid count depending on the device. Found in the `BoidRunner.java` class:
+One may need to adjust the initial Boid count depending on the device. Found in the `BoidRunner.java` file:
 
 ```java
 public class BoidRunner extends JPanel implements KeyListener, MouseListener, MouseMotionListener  {
         private static final long serialVersionUID = /**/;
 
-    public static final int BOIDCOUNT = 1200; //CHANGE THIS VALUE
+        public static final int BOIDCOUNT = 1200; //CHANGE THIS VALUE
 
 ```
 
 - - -
 ## Boids
-Boids are artificial life objects first developed by [Craig Reynolds in 1986](https://www.red3d.com/cwr/boids/ "Craig Reynolds Boids article") that mimic the behavior of bird flocks or fish schools. They contain three basic steering mechanics:
+Boids are artificial life objects first developed by [Craig Reynolds in 1986](https://www.red3d.com/cwr/boids/ "Craig Reynolds Boids article") that collectively mimic the behavior of bird flocks or fish schools. They contain three basic steering mechanics:
+
 * Alignment - steer to match the average velocity of its neighboring Boids.
-* Cohesion - steer toward the average position of its neighboring Boids.
-* Separation - keep a distance from each Boid to prevent crowding.
+* Cohesion steer toward the average position of its neighboring Boids.
+* Separation keep a distance from each Boid to prevent crowding.
 
 
 ## Types of Boids
