@@ -117,4 +117,4 @@ Marked with a **<span style="color:rgb(174,243,177);">pastel green</span>** colo
 * A Boid becomes **<span style="color:rgb(174,243,177);">paranoid</span>** by a random chance that increases as more total boids are infected relative to the total community size.
 * Once a Boid becomes paranoid, the only way it can lose the paranoia is to undergo infection and recovery
 * If a Boid is **<span style="color:rgb(174,243,177);">paranoid</span>**, it loses all trust in everybody and attempts to distance itself from every Boid as if they were all dead bodies.
-* aka *the social distancing Boid*
+* aka *the social distancing Boid*.
