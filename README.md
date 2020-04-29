@@ -1,6 +1,7 @@
 >Comments/explanations to the source code to be released soon.
 
-<img src="https://media.giphy.com/media/jri0djBg0j0fzLcBls/giphy.gif" height="332" width="800">
+<img src="https://im7.ezgif.com/tmp/ezgif-7-e72d74f9e205.gif" height="332" width="800">
+
 
 # Pandemic Simulator
 ##### by Ivan Hornung
