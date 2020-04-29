@@ -1,6 +1,6 @@
 >Comments/explanations to the source code to be released soon.
 
-<img src="https://im7.ezgif.com/tmp/ezgif-7-e72d74f9e205.gif" height="332" width="800">
+<img src="https://im7.ezgif.com/tmp/ezgif-7-941c724566ec.gif" height="332" width="800">
 
 
 # Pandemic Simulator
