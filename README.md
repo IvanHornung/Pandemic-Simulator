@@ -1,4 +1,12 @@
+<<<<<<< HEAD
 >Comments/explainations in the source code to be released soon.
+=======
+>Comments/explanations to the source code to be released soon.
+
+<img src="https://media.giphy.com/media/j2jrhbTLQfdd3wjJGG/giphy.gif" height="432" width="800">
+
+
+>>>>>>> 0f56e963ae211b638a55c2162d74afa01733a1d3
 # Pandemic Simulator
 ##### by Ivan Hornung
 ###### A student at Los Gatos High School

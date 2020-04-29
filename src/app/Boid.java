@@ -207,7 +207,7 @@ public class Boid {
                         }
                     }
                     else {//!Immunity loss
-                        if((int)(Math.random()*40000)==0 && !this.diagnosed) { //prevent double diagnoses while diagnosed
+                        if((int)(Math.random()*40000)==0 && !this.diagnosed && !this.dead) { //prevent double diagnoses while diagnosed
                             this.healthStatus = DIAGNOSED; //!Diagnosis
                             this.diagnosed = true;
                             new Sound("diagnosis.wav");
