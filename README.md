@@ -1,6 +1,8 @@
+
 >Comments/explanations to the source code to be released soon.
 
 <img src="https://media.giphy.com/media/j2jrhbTLQfdd3wjJGG/giphy.gif" height="432" width="800">
+
 
 
 # Pandemic Simulator
@@ -26,8 +28,8 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
 Boids are artificial life objects first developed by [Craig Reynolds in 1986](https://www.red3d.com/cwr/boids/ "Craig Reynolds Boids article") that collectively mimic the behavior of bird flocks or fish schools. They contain three basic steering mechanics:
 
 * Alignment - steer to match the average velocity of its neighboring Boids.
-* Cohesion steer toward the average position of its neighboring Boids.
-* Separation keep a distance from each Boid to prevent crowding.
+* Cohesion - steer toward the average position of its neighboring Boids.
+* Separation - keep a distance from each Boid to prevent crowding.
 
 
 ## Types of Boids
@@ -37,10 +39,10 @@ Boids are artificial life objects first developed by [Craig Reynolds in 1986](ht
 Marked with a **white** color.
 * Almost all Boids begin the simulation as healthy. 
 * Healthy Boids are susceptible to infection and demonstrate all three steering mechanics (alignment, cohesion, and separation).
-* Each healthy Boid has its own unique immunity value within a given range.
+* Each healthy Boid has its unique immunity value within a given range.
 * If a Boid's immunity level reaches zero, the Boid becomes <span style="color:red">**infected**</span>.
 * If a Boid is healthy, it gains immunity from each other healthy Boid within its perception radius by a value that is inversely proportional to the distance between them. This is one of the herd immunity principles in this simulation.
-* All together, they behave as a peaceful and undisturbed flock.
+* Altogether, they behave as a peaceful and undisturbed flock.
 * Once in a while, a new, healthy, community member joins the grid. New healthy community members are also summoned when a dead Boid's body is cleared.
 * Boids do not want to be clustered in groups of larger than 40.
 
@@ -56,7 +58,7 @@ Marked with a **<span style="color:red">red</span>** color.
 * Decreases the immunity value of healthy Boids in its perception radius by a value that is inversely proportional to the distance between them.
 * An infected Boid behaves just like a healthy Boid steering-wise (infection may be interpreted as a contagious incubation period).
 * Healthy Boids cannot tell if a Boid is infected or not.
-* Each infected Boid has its own lifespan. If the lifespan falls to zero over time, the Boid's fate is decided using real-world COVID-19 statistical death rates.
+* Each infected Boid has its lifespan. If the lifespan falls to zero over time, the Boid's fate is decided using real-world COVID-19 statistical death rates.
 * If the fate decides death, the Boid undergoes <span style="color:rgb(154, 74, 178);">**death**</span>, else the Boid <span style="color:rgb(101,194,255);">**recovers**</span>.
 * An infected Boid has the chance to undergo <span style="color:rgb(134,0,0);">**diagnosis**</span>.
 
@@ -100,14 +102,14 @@ Marked with a <span style="color:rgb(134,0,0);">**dark red**</span> color.
 Marked with a **<span style="color:blue">dark blue</span>** color.
 
 * There are always at least 3 paramedics on the grid while there a diagnosed Boid present.
-* Paramedics behave like normal boids until one person in the community becomes diagnosed.
+* Paramedics behave like normal Boids until one person in the community becomes diagnosed.
 * If one person is diagnosed, the paramedics change to an emergency state, where they turn on their sirens and rush to the position of the patient in need.
-* When paramedics are in an emergency state, they do not undergo any for of separational steering from other boids (including dead).
+* When paramedics are in an emergency state, they do not undergo any form of separational steering from other Boids (including dead).
 * The longer the distance the patient is from the paramedics, the more acceleration they give to reach the patient in time.
 * Paramedics decelerate significantly when in close contact with the patient.
-* Boids surrounding a parademic in an emergency state attempt to make way for the paramedic to pass.
+* Boids surrounding a paramedic in an emergency state attempt to make way for the paramedic to pass.
 * If the paramedic is in close contact with the patient, the patient undergoes the curing process, and will most likely be treated and recover. The more paramedics in immediate contact with the patient, the faster the curing process takes. 
-* If the patient gets cured, a new patient is chosen assuming there are moe diagnosed Boids on the grid.
+* If the patient gets cured, a new patient is chosen, assuming there are more diagnosed Boids on the grid.
 * While paramedics have significantly high immunity values relative to normal Boids, they are never immune to the disease and can end up becoming infected.
 * Paramedics create a "pop effect" after curing a patient.
 * More and more paramedics are called depending on the infection/noninfection ratio.
@@ -119,6 +121,6 @@ Marked with a **<span style="color:blue">dark blue</span>** color.
 Marked with a **<span style="color:rgb(174,243,177);">pastel green</span>** color.
 
 * A Boid becomes **<span style="color:rgb(174,243,177);">paranoid</span>** by a random chance that increases as more total boids are infected relative to the total community size.
-* Once a Boid becomes paranoid, the only way it can loose the paranoia is to undergo infection and recovery
+* Once a Boid becomes paranoid, the only way it can lose the paranoia is to undergo infection and recovery
 * If a Boid is **<span style="color:rgb(174,243,177);">paranoid</span>**, it loses all trust in everybody and attempts to distance itself from every Boid as if they were all dead bodies.
-* aka *the social distancing Boid*
+* aka *the social distancing Boid*.
