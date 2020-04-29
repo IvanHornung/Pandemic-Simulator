@@ -79,7 +79,7 @@ Marked with a <span style="color:rgb(134,0,0);">**dark red**</span> color.
 * A diagnosed Boid tries to reach toward any rushing paramedics, even if the Boid is not the patient.
 
 ### **<span style="color:blue;">Paramedic</span>**
-<img src="https://i.imgur.com/PJMrO2o.png" height="163" width="252"> <img src="https://im3.ezgif.com/tmp/ezgif-3-bd1efc74e98b.gif" height="163" width="252"> <img src="https://media.giphy.com/media/WsM1ZoPUjZTeI73c78/giphy.gif" height="163" width="252"> <img src="https://im3.ezgif.com/tmp/ezgif-3-2406b5cf8c7c.gif" height="163" width="252"> 
+<img src="https://i.imgur.com/PJMrO2o.png" height="163" width="252"> <img src="https://media.giphy.com/media/J2hBYVHwAasgX7Mghy/giphy.gif" height="163" width="252"> <img src="https://media.giphy.com/media/WsM1ZoPUjZTeI73c78/giphy.gif" height="163" width="252"> <img src="https://media.giphy.com/media/UriDtbghES4E4AGCvI/giphy.gif" height="163" width="252"> 
 
 Marked with a **<span style="color:blue">dark blue</span>** color.
 

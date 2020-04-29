@@ -151,7 +151,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                 boolean addInfected = false;
                 if(recoveryCount+healthyCount > (int)(flock.size()*0.75))
                     addInfected = true;
-                flock.add(new Boid(mouseXPosition, mouseYPosition, addInfected));
+                //flock.add(new Boid(mouseXPosition, mouseYPosition, addInfected));
                 addedNewBoid = false;
             }   
             //updateHealthy();
