@@ -7,6 +7,9 @@ import java.awt.event.*;
 
 public class BoidRunner extends JPanel implements KeyListener, MouseListener, MouseMotionListener  {
     private static final long serialVersionUID = -8716187417647724411L;
+    
+    public static final int BOIDCOUNT = 1200; //*Adjust this value to match your computer's optimal processing
+    
     public static final int WIDTH = 1920;
     public static final int HEIGHT = 1080;
     static ArrayList<Boid> flock = new ArrayList<Boid>();
@@ -30,7 +33,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
 
         createLabels();
 
-        for(int i = 0; i < 1200; i++) //1200
+        for(int i = 0; i < BOIDCOUNT; i++) //1200
             flock.add(new Boid());
 
         music = new Sound("plague.wav");
