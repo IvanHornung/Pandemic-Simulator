@@ -1,4 +1,4 @@
->Comments/explainations to the source code to be released soon.
+>Comments/explanations to the source code to be released soon.
 # Pandemic Simulator
 ##### by Ivan Hornung
 ###### A student at Los Gatos High School
