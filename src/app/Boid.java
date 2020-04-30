@@ -129,7 +129,6 @@ public class Boid {
                 if((int)(Math.random()*100) < mortalityRate) {
                     this.dead = true; //!Death
                     BoidRunner.updateDead();
-                    //new Sound("death.wav");
                     this.healthStatus = DEAD;
                 } else {
                     this.hasDisease = false; //!Recovery
@@ -138,7 +137,6 @@ public class Boid {
                         patient = null;
                         lockedOn = false;
                     }
-                    //BoidRunner.updateRecovered();
                     new Sound("recovery.wav");
                     this.healthStatus = RECOVERED;
                     this.immunity = this.immunityCap * (Math.random()*50+100);
@@ -163,7 +161,6 @@ public class Boid {
                 this.immunityCap = this.immunity;
                 this.immunityLife = initialLifeSpan*(6*(Math.random()*0.8+0.5));
                 this.lifeSpan = this.initialLifeSpan;
-                //BoidRunner.lostImmunity();
                 new Sound("immunitylost.wav");
             }
         } //!Alignment
@@ -198,7 +195,6 @@ public class Boid {
                         if(flock.get(i).healthStatus == PARANOID)
                             new Sound("paranoiaEnded.wav");
                         flock.get(i).healthStatus = INFECTED; //!Infection
-                        //BoidRunner.updateInfected();
                         new Sound("newpatient.wav");
                         flock.get(i).hasDisease = true;
                         if(this.isParamedic) {
@@ -243,8 +239,6 @@ public class Boid {
         if(total > 0) {
             if(total > 0)
                 steering.divide((double)total);
-            //else
-            //    steering.add(patient.velocity);
             steering.setMagnitude(((alignmentMaxSpeed != maxSpeed) ? alignmentMaxSpeed : maxSpeed));
             steering.subtract(this.velocity);
             steering.limit(((alignmentMaxForce != maxForce) ? alignmentMaxForce : maxForce));
@@ -272,7 +266,6 @@ public class Boid {
                 steering.add(patient.position);
             }
             steering.subtract(this.position);
-            //if((this.isParamedic && lockedOn))
             steering.setMagnitude(((cohesionMaxSpeed != maxSpeed) ? cohesionMaxSpeed : maxSpeed));
             steering.subtract(this.velocity);
             steering.limit(((this.isParamedic && lockedOn)?cohesionMaxForce*3:(cohesionMaxForce != maxForce) ? cohesionMaxForce : maxForce));
@@ -297,23 +290,20 @@ public class Boid {
                 } if(this.isParamedic && boid.isParamedic && lockedOn 
                         && distance(this.position.xvalue, this.position.yvalue, patient.position.xvalue, boid.position.yvalue) > 150 && dist < 5) {
                     difference.multiply(15);
-                    //if(dist < 100)
-                     //   difference.divide(20);
                 }
                 if(boid.isParamedic && lockedOn && !this.isParamedic)
                     emergencyServicePresent = true;
-                // } if(this.healthStatus == PARANOID)
-                //     difference.multiply(50);
                 steering.add(difference);
-                //Implementing FOV would go here, check Git history to access
                 total++;
             }
         }
         if(total > 0) {
             steering.divide((double)total);
-            steering.setMagnitude(((total > 40 || emergencyServicePresent) ? separationMaxSpeed*((emergencyServicePresent)?6:2) : ((this.healthStatus == PARANOID)? separationMaxSpeed*5:separationMaxSpeed)));
+            steering.setMagnitude(((total > 40 || emergencyServicePresent) ? separationMaxSpeed
+                    *((emergencyServicePresent)?6:2) : ((this.healthStatus == PARANOID)? separationMaxSpeed*5:separationMaxSpeed)));
             steering.subtract(this.velocity);
-            steering.limit(((total > 40 || emergencyServicePresent) ? separationMaxForce*((emergencyServicePresent)?6:2) : ((this.healthStatus == PARANOID)? separationMaxForce*5:separationMaxForce)));
+            steering.limit(((total > 40 || emergencyServicePresent) ? separationMaxForce
+                    *((emergencyServicePresent)?6:2) : ((this.healthStatus == PARANOID)? separationMaxForce*5:separationMaxForce)));
         }
         return steering;
     }
@@ -325,17 +315,14 @@ public class Boid {
         this.acceleration.set(0, 0);
         Vector alignment = this.align(flock);
         Vector cohesion = this.cohesion(flock);
-        //if(this.isParamedic && lockedOn)
-        //      cohesion.multiply(10);
         Vector separation = this.separation(flock);
         //Force accumulation:
         if(!emergencyWork) 
             this.acceleration.add(alignment);
         this.acceleration.add(separation);
-        
-        //cohesion.multiply(emergencyWork?3:1);
         this.acceleration.add(cohesion);
     }
+
     double patientDistance;
 
     void update() {
@@ -343,7 +330,8 @@ public class Boid {
             if(this.isParamedic && lockedOn && patientDistance >= 10) {
                 if((int)(Math.random()*BoidRunner.paramedicCount) == 0) //since travelTime is static and you only want to increase it by
                      Boid.travelTime++;       //about one every cycle, have it be a 1/paramedicCount chance for the traveltime to increase
-                Vector emergencyVelocity = this.velocity.setMagnitude(this.velocity.getMagnitude()*2+((Boid.travelTime > 20)?Boid.travelTime/200:1));
+                Vector emergencyVelocity = this.velocity.setMagnitude(
+                    this.velocity.getMagnitude()*2+((Boid.travelTime > 20)?Boid.travelTime/200:1));
                 this.position.add(emergencyVelocity); 
             }
             else
@@ -360,7 +348,7 @@ public class Boid {
                 patientBlink++;
                 switch(patientBlink) {
                     case 0 :
-                        this.DIAGNOSED = new Color(252, 52, 52);//new Color(245,83,83);
+                        this.DIAGNOSED = new Color(252, 52, 52);
                         break;
                     case 1 :
                         this.DIAGNOSED = new Color(134, 0 , 0);
@@ -409,8 +397,8 @@ public class Boid {
     static double maxForce = 0.2;
     static double maxSpeed = 2;
 
-    static final double speedChangeValue = 10; //0.1
-    static final double forceChangeValue = 1; //0.05
+    static final double speedChangeValue = 10;
+    static final double forceChangeValue = 1;
     static final double perceptionRadiusChangeValue = 100; //1
 
     static double alignmentPerceptionRadius = 50;
@@ -449,53 +437,4 @@ public class Boid {
     static void decrementSeparationMaxSpeed() { Boid.separationMaxSpeed -= speedChangeValue; }
     static void incrementSeparationMaxForce() { Boid.separationMaxForce += forceChangeValue; }
     static void decrementSeparationMaxForce() { Boid.separationMaxForce -= forceChangeValue; }
-
-    //!MODIFICATIONS///////////////////////////////
-    /*static double maxForce = 0.2;
-    static double maxSpeed = 2;
-
-    static final double speedChangeValue = 10; //0.1
-    static final double forceChangeValue = 1; //0.05
-    static final double perceptionRadiusChangeValue = 100; //1
-
-    static double alignmentPerceptionRadius = 50;
-    static double cohesionPerceptionRadius = 100;
-    static double separationPerceptionRadius = 100;
-    static double separationMaxForce = maxForce;
-
-    //!General modifications
-    static void incrementMaxSpeed() { Boid.maxSpeed += speedChangeValue; }
-    static void decrementMaxSpeed() { Boid.maxSpeed -= speedChangeValue; }
-    static void incrementMaxForce() { Boid.maxForce += forceChangeValue; }
-    static void decrementMaxForce() { Boid.maxForce -= forceChangeValue; }
-    //!Alignment modifications
-    static void incremementAlignmentPerceptionRadius() { Boid.alignmentPerceptionRadius -= perceptionRadiusChangeValue; }
-    static void decrementAlignmentPerceptionRadius() { Boid.alignmentPerceptionRadius -= perceptionRadiusChangeValue; }
-    //!Cohesion modifications
-    static void incremementCohesionPerceptionRadius() { Boid.cohesionPerceptionRadius -= perceptionRadiusChangeValue; }
-    static void decrementCohesionPerceptionRadius() { Boid.cohesionPerceptionRadius -= perceptionRadiusChangeValue; }
-    //!Separation modifications
-    static void incremementSeparationPerceptionRadius() { Boid.separationPerceptionRadius -= perceptionRadiusChangeValue; }
-    static void decrementSeparationPerceptionRadius() { Boid.separationPerceptionRadius -= perceptionRadiusChangeValue; }
-    static void incrementSeparationMaxForce() { Boid.separationMaxForce += forceChangeValue; }
-    static void decrementSeparationMaxForce() { Boid.separationMaxForce -= forceChangeValue; }*/
-
-    //!Discarded methods/variables
-
-    // static double alignmentMaxSpeed = maxSpeed;
-    // static double alignmentMaxForce = maxForce;
-    // static double cohesionMaxSpeed = maxSpeed;
-    // static double cohesionMaxForce = maxForce;
-    // static double separationMaxSpeed = maxSpeed;
-
-    // static void incrementSeparationMaxSpeed() { Boid.separationMaxSpeed += speedChangeValue; }
-    // static void decrementSeparationMaxSpeed() { Boid.separationMaxSpeed -= speedChangeValue; }
-    // static void incrementCohesionMaxSpeed() { Boid.cohesionMaxSpeed += speedChangeValue; }
-    // static void decrementCohesionMaxSpeed() { Boid.cohesionMaxSpeed -= speedChangeValue; }
-    // static void incrementCohesionMaxForce() { Boid.cohesionMaxForce += forceChangeValue; }
-    // static void decrementCohesionMaxForce() { Boid.cohesionMaxForce -= forceChangeValue; }
-    // static void incrementAlignmentMaxSpeed() { Boid.alignmentMaxSpeed += speedChangeValue; }
-    // static void decrementAlignmentMaxSpeed() { Boid.alignmentMaxSpeed -= speedChangeValue; }
-    // static void incrementAlignmentMaxForce() { Boid.alignmentMaxForce += forceChangeValue; }
-    // static void decrementAlignmentMaxForce() { Boid.alignmentMaxForce -= forceChangeValue; }
 }

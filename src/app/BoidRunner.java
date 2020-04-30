@@ -33,11 +33,10 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
 
         createLabels();
 
-        for(int i = 0; i < BOIDCOUNT; i++) //1200
+        for(int i = 0; i < BOIDCOUNT; i++)
             flock.add(new Boid());
 
         music = new Sound("plague.wav");
-        //music = new Sound("ambience.wav");
     }
 
     @Override
@@ -100,10 +99,13 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                     flock.get(i).PARAMEDIC = Color.BLUE;
                     flock.get(i).healthStatus = flock.get(i).PARAMEDIC;
                 }
-                if((int)(Math.random()*healthyCount*2000+((healthyCount == 0)?1:0)) == 0 && !flock.get(i).hasDisease && diagnosedCount >= 3 && flock.get(i).healthStatus != Boid.PARANOID && paranoidCount <= 15) {
+                if((int)(Math.random()*healthyCount*2000+((healthyCount == 0)?1:0)) == 0 && 
+                        !flock.get(i).hasDisease && diagnosedCount >= 3 && 
+                        flock.get(i).healthStatus != Boid.PARANOID && paranoidCount <= 15) {
                     flock.get(i).healthStatus = Boid.PARANOID;
                     new Sound("paranoia.wav");
-                } if(recoveryCount >= 800 && flock.get(i).healthStatus == Boid.PARANOID && (int)(int)(Math.random()*totalInfected*200+((totalInfected == 0)?1:0)) == 0 ) {
+                } if(recoveryCount >= 800 && flock.get(i).healthStatus == Boid.PARANOID &&
+                        (int)(Math.random()*totalInfected*200+((totalInfected == 0)?1:0)) == 0 ) {
                     flock.get(i).healthStatus = Boid.HEALTHY;
                     new Sound("paranoiaEnded.wav");
                 }
@@ -150,14 +152,9 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
             int more = (int)(Math.random()*((flock.size()>=900) ? 1000 : 500));
             if(more == 0)
                 flock.add(new Boid());
-            if(addedNewBoid) {
-                boolean addInfected = false;
-                if(recoveryCount+healthyCount > (int)(flock.size()*0.75))
-                    addInfected = true;
-                //flock.add(new Boid(mouseXPosition, mouseYPosition, addInfected));
+            if(addedNewBoid) 
                 addedNewBoid = false;
-            }   
-            //updateHealthy();
+            
             this.repaint();
             try {
                 Thread.sleep(10);
