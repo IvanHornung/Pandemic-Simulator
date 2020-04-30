@@ -136,9 +136,6 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                 new Sound("intensity.wav");
                 intensityPlayed = !intensityPlayed;
             }
-            if(totalInfected >= (int)(flock.size()*0.8) && (int)(Math.random()*(recoveryCount+healthyCount)*1000) == 0) {
-
-            }
             if(deathCount >= 100) {
                 if(!milestonePlayed && deathCount % 100 == 0) {
                     new Sound("deathmilestone.wav");
@@ -161,8 +158,6 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
             } catch( InterruptedException ex ){}
         }
     }
-
-    //clean method available in git history; wipes out all dead at once
 
     void createLabels() {
         //Healthy
@@ -363,8 +358,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         }
         else if(event.getKeyCode() == KeyEvent.VK_Z)
             addedBoids.add(new Boid(5));
-        //else if(event.getKeyCode() == KeyEvent.VK_BACK_QUOTE)
-        //    Boid.pause();
+
     }
     boolean clearGrid = false;
 
@@ -379,52 +373,11 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
 
     //required for compiling; do not use
     public void mouseClicked( MouseEvent event ) {}
-
     public void mouseReleased( MouseEvent event ) {}
-
     public void mouseEntered( MouseEvent event ) {}
-
     public void mouseExited( MouseEvent event ) {}
     // MouseMotionListener: constantly update whenever mouse is moved
     public void mouseMoved(MouseEvent event) {}
-
     public void mouseDragged(MouseEvent event) {}
 
-    //!Discarded KeyListener statements
-        //if(event.getKeyCode() == KeyEvent.VK_Q)
-        //    Boid.incrementMaxForce();
-        //if(event.getKeyCode() == KeyEvent.VK_A)
-        //    Boid.decrementMaxForce();
-        //if(event.getKeyCode()==KeyEvent.VK_W) 
-        //    Boid.incremementAlignmentPerceptionRadius();
-        /*if(event.getKeyCode() == KeyEvent.VK_E)
-            Boid.incrementAlignmentMaxSpeed();
-        if(event.getKeyCode() == KeyEvent.VK_D)
-            Boid.decrementAlignmentMaxSpeed();
-        if(event.getKeyCode() == KeyEvent.VK_R)
-            Boid.incrementAlignmentMaxForce();
-        if(event.getKeyCode() == KeyEvent.VK_F)
-            Boid.decrementAlignmentMaxForce();
-        //!Cohesion
-        if(event.getKeyCode()==KeyEvent.VK_T) 
-            Boid.incremementCohesionPerceptionRadius();
-        if(event.getKeyCode()==KeyEvent.VK_G)
-            Boid.decrementCohesionPerceptionRadius();
-        if(event.getKeyCode() == KeyEvent.VK_Y)
-            Boid.incrementCohesionMaxSpeed();
-        if(event.getKeyCode() == KeyEvent.VK_H)
-            Boid.decrementCohesionMaxSpeed();
-        if(event.getKeyCode() == KeyEvent.VK_U)
-            Boid.incrementCohesionMaxForce();
-        if(event.getKeyCode() == KeyEvent.VK_J)
-            Boid.decrementCohesionMaxForce();
-        //!Separation
-        if(event.getKeyCode()==KeyEvent.VK_I) 
-            Boid.incremementSeparationPerceptionRadius();
-        if(event.getKeyCode()==KeyEvent.VK_K)
-            Boid.decrementSeparationPerceptionRadius();
-        if(event.getKeyCode() == KeyEvent.VK_O)
-            Boid.incrementSeparationMaxSpeed();
-        if(event.getKeyCode() == KeyEvent.VK_L)
-            Boid.decrementSeparationMaxSpeed();*/
 }
