@@ -45,7 +45,7 @@ Marked with a **white** color.
 * Altogether, they behave as a peaceful and undisturbed flock.
 * Once in a while, a new, healthy, community member joins the grid. New healthy community members are also summoned when a dead Boid's body is cleared.
 * Boids do not want to be clustered in groups of larger than 40.
-
+* Can be artificial summoned by pressing the `R` key.
 
 
 
@@ -61,6 +61,8 @@ Marked with a **<span style="color:red">red</span>** color.
 * Each infected Boid has its lifespan. If the lifespan falls to zero over time, the Boid's fate is decided using real-world COVID-19 statistical death rates.
 * If the fate decides death, the Boid undergoes <span style="color:rgb(154, 74, 178);">**death**</span>, else the Boid <span style="color:rgb(101,194,255);">**recovers**</span>.
 * An infected Boid has the chance to undergo <span style="color:rgb(134,0,0);">**diagnosis**</span>.
+* Can be artificial summoned by pressing the `F` key.
+
 
 ### **<span style="color:rgb(101,194,255);">Recovered</span>**
 <img src="https://i.imgur.com/phsxP8P.png" height="163" width="252"> <img src="https://media.giphy.com/media/L2O5XlBb68E4FEnbnc/giphy.gif" height="163" width="252">
@@ -73,6 +75,7 @@ Marked with a **<span style="color:rgb(101,194,255);">light blue</span>** color.
 * A recovered Boid shares the same steering mechanics as a healthy boid.
 * A recovered Boid is immune to the pandemic disease for a relatively long length of time.
 * A recovered Boid is not considered to be healthy count-wise.
+* Can be artificial summoned by pressing the `T` key.
 
 ### **<span style="color:rgb(154, 74, 178);">Dead</span>**
 <img src="https://i.imgur.com/DrPGzOc.png" height="163" width="252"> <img src="https://media.giphy.com/media/fZ8tL6AcqlyYkG3Xgh/giphy.gif" height="163" width="252"> <img src="https://media.giphy.com/media/L11x1x4tUj7oPTLJaM/giphy.gif" height="163" width="252">
@@ -83,6 +86,7 @@ Marked with a **<span style="color:rgb(154, 74, 178);">purple</span>** color.
 * A dead Boid is left to rot on the ground for a calculated period of time.
 * A dead Boid is contagious.
 * All Boids try to avoid dead Boids (except for on-duty **<span style="color:blue">paramedics</span>**).
+* Can be artificial summoned by pressing the `G` key.
 
 ### **<span style="color:rgb(134,0,0);">Diagnosed</span>**
 <img src="https://i.imgur.com/JuS4vik.png" height="163" width="252"> <img src="https://media.giphy.com/media/iJmMYBWi0HX3P6CxTJ/giphy.gif" height="163" width="252"> <img src="https://media.giphy.com/media/WsM1ZoPUjZTeI73c78/giphy.gif" height="163" width="252"> 
@@ -95,6 +99,7 @@ Marked with a <span style="color:rgb(134,0,0);">**dark red**</span> color.
 * If the Boid is the current patient, it signals a **blinking** effect.
 * If the diagnosed Boid is treated by **<span style="color:blue">paramedics</span>**, it becomes a <span style="color:rgb(101,194,255);">**recovered**</span> Boid.
 * A diagnosed Boid tries to reach toward any rushing paramedics, even if the Boid is not the patient.
+* Can be artificial summoned by pressing the `H` key.
 
 ### **<span style="color:blue;">Paramedic</span>**
 <img src="https://i.imgur.com/PJMrO2o.png" height="163" width="252"> <img src="https://media.giphy.com/media/J2hBYVHwAasgX7Mghy/giphy.gif" height="163" width="252"> <img src="https://media.giphy.com/media/WsM1ZoPUjZTeI73c78/giphy.gif" height="163" width="252"> <img src="https://media.giphy.com/media/UriDtbghES4E4AGCvI/giphy.gif" height="163" width="252"> 
@@ -114,6 +119,7 @@ Marked with a **<span style="color:blue">dark blue</span>** color.
 * Paramedics create a "pop effect" after curing a patient.
 * More and more paramedics are called depending on the infection/noninfection ratio.
 * Paramedics are slowly removed if the proportion to infected/noninfected is less.
+* Can be artificial summoned by pressing the `Y` key.
 
 ### **<span style="color:rgb(174,243,177);">Paranoid</span>**
 <img src="https://i.imgur.com/XpRqPeT.png" height="163" width="252"> <img src="https://media.giphy.com/media/fWBX99ymYMuewi2M8x/giphy.gif" height="163" width="252">
@@ -124,3 +130,29 @@ Marked with a **<span style="color:rgb(174,243,177);">pastel green</span>** colo
 * Once a Boid becomes paranoid, the only way it can lose the paranoia is to undergo infection and recovery
 * If a Boid is **<span style="color:rgb(174,243,177);">paranoid</span>**, it loses all trust in everybody and attempts to distance itself from every Boid as if they were all dead bodies.
 * aka *the social distancing Boid*.
+* Can be artificial summoned by pressing the `U` key.
+
+## Additional Features
+
+### Altering Environment
+
+* Clicking on the screen will add a new healthy Boid to that location.
+* Pressing the `;` key decrease the separation force between Boids.
+  * Can be used to simulate public gatherings.
+* Pressing the `P` key increases the separation force between Boids.
+  * Can be used to simulate social distancing.
+* Pressing the `\` clears the grid of all Boids.
+  * Made to be a demonstration environment.
+  * (Note: there is always at least one infectant, and Boids spawn naturally).
+* See "Types of Boids" for artificially summoning types of Boids using keystrokes.
+  * Ex: Healthy Boid can be artificial summoned by pressing the `R` key.
+
+### Music and Sounds
+
+* Pressing the `/` key stops the main music.
+* Pressing the `.` key will restart the main music.
+  * (only do this if you have turned off the music already, otherwise there will be two tracks playing simultaneously).
+* Keys `1` through `9` and `0` play their own unique sounds.
+  * Ex: `1` triggers `newpatient.wav` to play, the sound that goes off whenever a healthy Boid becomes infected.
+* Pressing the `B` key creates a bell noise.
+* Pressing the `N` key creates an ambulance siren noise.

@@ -89,35 +89,6 @@ public class Boid {
         }
     }
 
-    public Boid(int type) {
-        this.position = new Vector((int)(BoidRunner.WIDTH)/2,(int)(BoidRunner.HEIGHT)/2);
-        this.velocity = new Vector(0,0);
-        this.acceleration = new Vector(0,0);
-        switch(type) {
-            case 1:
-                this.healthStatus = Boid.HEALTHY;
-                break;
-            case 2:
-                this.healthStatus = Boid.INFECTED;
-                break;
-            case 3:
-                this.healthStatus = Boid.RECOVERED;
-                break;
-            case 4:
-                this.healthStatus = Boid.DEAD;
-                break;
-            case 5:
-                this.healthStatus = Boid.PARANOID;
-                break;
-            case 6:
-                this.healthStatus = PARAMEDIC;
-                break;
-            case 7:
-                this.healthStatus = DIAGNOSED;
-                break;
-        }
-    }
-
     Vector align(ArrayList<Boid> flock) {
         int perceptionRadius = (int)(alignmentPerceptionRadius);
         int total = 0;
@@ -239,9 +210,9 @@ public class Boid {
         if(total > 0) {
             if(total > 0)
                 steering.divide((double)total);
-            steering.setMagnitude(((alignmentMaxSpeed != maxSpeed) ? alignmentMaxSpeed : maxSpeed));
+            steering.setMagnitude(maxSpeed);
             steering.subtract(this.velocity);
-            steering.limit(((alignmentMaxForce != maxForce) ? alignmentMaxForce : maxForce));
+            steering.limit(maxForce);
         }
         return steering;
     }
@@ -266,9 +237,9 @@ public class Boid {
                 steering.add(patient.position);
             }
             steering.subtract(this.position);
-            steering.setMagnitude(((cohesionMaxSpeed != maxSpeed) ? cohesionMaxSpeed : maxSpeed));
+            steering.setMagnitude(maxSpeed);
             steering.subtract(this.velocity);
-            steering.limit(((this.isParamedic && lockedOn)?cohesionMaxForce*3:(cohesionMaxForce != maxForce) ? cohesionMaxForce : maxForce));
+            steering.limit(maxForce*((this.isParamedic && lockedOn)?3:1));
         }
         return steering;
     }
@@ -397,44 +368,14 @@ public class Boid {
     static double maxForce = 0.2;
     static double maxSpeed = 2;
 
-    static final double speedChangeValue = 10;
     static final double forceChangeValue = 1;
-    static final double perceptionRadiusChangeValue = 100; //1
 
     static double alignmentPerceptionRadius = 50;
-    static double alignmentMaxSpeed = maxSpeed;
-    static double alignmentMaxForce = maxForce;
     static double cohesionPerceptionRadius = 100;
-    static double cohesionMaxSpeed = maxSpeed;
-    static double cohesionMaxForce = maxForce;
     static double separationPerceptionRadius = 100;
     static double separationMaxSpeed = maxSpeed;
     static double separationMaxForce = maxForce;
-
-    //!General modifications
-    static void incrementMaxSpeed() { Boid.maxSpeed += speedChangeValue; }
-    static void decrementMaxSpeed() { Boid.maxSpeed -= speedChangeValue; }
-    static void incrementMaxForce() { Boid.maxForce += forceChangeValue; }
-    static void decrementMaxForce() { Boid.maxForce -= forceChangeValue; }
-    //!Alignment modifications
-    static void incremementAlignmentPerceptionRadius() { Boid.alignmentPerceptionRadius -= perceptionRadiusChangeValue; }
-    static void decrementAlignmentPerceptionRadius() { Boid.alignmentPerceptionRadius -= perceptionRadiusChangeValue; }
-    static void incrementAlignmentMaxSpeed() { Boid.alignmentMaxSpeed += speedChangeValue; }
-    static void decrementAlignmentMaxSpeed() { Boid.alignmentMaxSpeed -= speedChangeValue; }
-    static void incrementAlignmentMaxForce() { Boid.alignmentMaxForce += forceChangeValue; }
-    static void decrementAlignmentMaxForce() { Boid.alignmentMaxForce -= forceChangeValue; }
-    //!Cohesion modifications
-    static void incremementCohesionPerceptionRadius() { Boid.cohesionPerceptionRadius -= perceptionRadiusChangeValue; }
-    static void decrementCohesionPerceptionRadius() { Boid.cohesionPerceptionRadius -= perceptionRadiusChangeValue; }
-    static void incrementCohesionMaxSpeed() { Boid.cohesionMaxSpeed += speedChangeValue; }
-    static void decrementCohesionMaxSpeed() { Boid.cohesionMaxSpeed -= speedChangeValue; }
-    static void incrementCohesionMaxForce() { Boid.cohesionMaxForce += forceChangeValue; }
-    static void decrementCohesionMaxForce() { Boid.cohesionMaxForce -= forceChangeValue; }
-    //!Separation modifications
-    static void incremementSeparationPerceptionRadius() { Boid.separationPerceptionRadius -= perceptionRadiusChangeValue; }
-    static void decrementSeparationPerceptionRadius() { Boid.separationPerceptionRadius -= perceptionRadiusChangeValue; }
-    static void incrementSeparationMaxSpeed() { Boid.separationMaxSpeed += speedChangeValue; }
-    static void decrementSeparationMaxSpeed() { Boid.separationMaxSpeed -= speedChangeValue; }
+    
     static void incrementSeparationMaxForce() { Boid.separationMaxForce += forceChangeValue; }
     static void decrementSeparationMaxForce() { Boid.separationMaxForce -= forceChangeValue; }
 }

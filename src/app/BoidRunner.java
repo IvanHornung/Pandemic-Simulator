@@ -149,9 +149,10 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
             int more = (int)(Math.random()*((flock.size()>=900) ? 1000 : 500));
             if(more == 0)
                 flock.add(new Boid());
-            if(addedNewBoid) 
+            if(addedNewBoid) {
+                flock.add(new Boid(mouseXPosition, mouseYPosition, false));
                 addedNewBoid = false;
-            
+            }
             this.repaint();
             try {
                 Thread.sleep(10);
@@ -259,14 +260,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
 
     public void keyPressed( KeyEvent event ) {
         //!General
-        if(event.getKeyCode()==KeyEvent.VK_UP) 
-            Boid.incrementMaxSpeed();
-        else if(event.getKeyCode()==KeyEvent.VK_DOWN)
-            Boid.decrementMaxSpeed();
-        //!Alignment
-        else if(event.getKeyCode()==KeyEvent.VK_S)
-            Boid.decrementAlignmentPerceptionRadius();
-        else if(event.getKeyCode() == KeyEvent.VK_P)
+        if(event.getKeyCode() == KeyEvent.VK_P)
             Boid.incrementSeparationMaxForce();
         else if(event.getKeyCode() == KeyEvent.VK_SEMICOLON)
             Boid.decrementSeparationMaxForce();
@@ -356,8 +350,6 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
             paranoidBoid.healthStatus = Boid.PARANOID;
             addedBoids.add(paranoidBoid);
         }
-        else if(event.getKeyCode() == KeyEvent.VK_Z)
-            addedBoids.add(new Boid(5));
 
     }
     boolean clearGrid = false;
