@@ -33,7 +33,7 @@ public class Sound extends JFrame {
                 }
                 clip.start();
                 clip.loop((filename.equals("plague.wav") || filename.equals("ambience.wav") ||
-                            filename.startsWith("ambulance")) ? 10 : 0);
+                            filename.startsWith("ambulance")) ? 4 : 0);
 
             } catch (UnsupportedAudioFileException e) {
                 e.printStackTrace();

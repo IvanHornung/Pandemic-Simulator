@@ -156,3 +156,8 @@ Marked with a **<span style="color:rgb(174,243,177);">pastel green</span>** colo
   * Ex: `1` triggers `newpatient.wav` to play, the sound that goes off whenever a healthy Boid becomes infected.
 * Pressing the `B` key creates a bell noise.
 * Pressing the `N` key creates an ambulance siren noise.
+
+### Miscellaneous
+
+* Pressing the `E` key hides the counts on the top.
+* Pressing the `Q` key undoes this action (makes it visible again).

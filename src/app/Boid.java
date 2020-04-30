@@ -328,6 +328,15 @@ public class Boid {
                 if(patientBlink > 1) patientBlink = -1;
             }
         }
+        //Ensures that paramedics do not treat a diagnosed Boid turned dead
+        if(this.isParamedic && lockedOn && patient.dead) {
+            patient.diagnosed = false;
+            siren.stopSong();
+            siren = null;
+            lockedOn = false;
+            patient = null;
+            Boid.travelTime = 0;
+        }
     }
 
     void edges() {
