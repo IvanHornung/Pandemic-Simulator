@@ -148,14 +148,37 @@ Marked with a **<span style="color:rgb(174,243,177);">pastel green</span>** colo
   * Ex: Healthy Boid can be artificially summoned by pressing the `R` key.
 
 ### Music and Sounds
+| Key/Button | Action |
+|:---:|:---:|
+|`\`| stops the main music (`plague.wav`)|
+|`.`| restarts the main music<sup>1</sup> (`plague.wav`)|
+|`1`|Triggers `newpatient.wav` to play|
+|`2`| Triggers `recovery.wav` to play|
+|`3`| Triggers `immunitylost.wav` to play|
+|`4`| Triggers `death.wav` to play|
+|`5`| Triggers `diagnosis.wav` to play|
+|`6`| Triggers `paranoia.wav` to play|
+|`7`| Triggers `paranoiaEnded.wav` to play|
+|`8`| Triggers `treatment.wav` to play|
+|`9`| Triggers `deathmilestone.wav` to play|
+|`0`| Triggers `intensity.wav` to play|
+|`B`| Triggers `bell.wav` to play|
+|`N`| Triggers `ambulance.wav` to play|
 
-* Pressing the `/` key stops the main music.
-* Pressing the `.` key will restart the main music.
-  * (only do this if you have turned off the music already, otherwise there will be two tracks playing simultaneously).
-* Keys `1` through `9` and `0` play their own unique sounds.
-  * Ex: `1` triggers `newpatient.wav` to play, the sound that goes off whenever a healthy Boid becomes infected.
-* Pressing the `B` key creates a bell noise.
-* Pressing the `N` key creates an ambulance siren noise.
+
+###### **1**: *only do this if you have turned off the music already, otherwise there will be two tracks playing simultaneously*
+
+`plague.wav` goes off when the simulation initiates or when the  ` . ` key is pushed.
+
+`newpatient.wav` goes off when a healthy Boid becomes *infected*.
+
+`recovery.wav` goes off when an *infected* Boid *recovers*.
+
+`immunitylost.wav` goes off when a *recovered* Boid's immunity wears off, thus turning into a *healthy* boid.
+
+`death.wav` goes off when an *infected* Boid dies.
+
+`diagnosis.wav` goes off when an *infected* Boid becomes diagnosed.
 
 ### Miscellaneous
 
