@@ -132,55 +132,77 @@ Marked with a **<span style="color:rgb(174,243,177);">pastel green</span>** colo
 * aka *the social distancing Boid*.
 * Can be artificially summoned by pressing the `U` key.
 
+---
 ## Additional Features
 
-### Altering Environment
+### **Keybindings**
 
-* Clicking on the screen will add a new healthy Boid to that location.
-* Pressing the `;` key decrease the separation force between Boids.
-  * Can be used to simulate public gatherings.
-* Pressing the `P` key increases the separation force between Boids.
-  * Can be used to simulate social distancing.
-* Pressing the `\` clears the grid of all Boids.
-  * Made to be a demonstration environment.
-  * (Note: there is always at least one infectant, and Boids spawn naturally).
-* See "Types of Boids" for artificially summoning types of Boids using keystrokes.
-  * Ex: Healthy Boid can be artificially summoned by pressing the `R` key.
-
-### Music and Sounds
 | Key/Button | Action |
 |:---:|:---:|
-|`\`| stops the main music (`plague.wav`)|
-|`.`| restarts the main music<sup>1</sup> (`plague.wav`)|
-|`1`|Triggers `newpatient.wav` to play|
-|`2`| Triggers `recovery.wav` to play|
-|`3`| Triggers `immunitylost.wav` to play|
-|`4`| Triggers `death.wav` to play|
-|`5`| Triggers `diagnosis.wav` to play|
-|`6`| Triggers `paranoia.wav` to play|
-|`7`| Triggers `paranoiaEnded.wav` to play|
-|`8`| Triggers `treatment.wav` to play|
-|`9`| Triggers `deathmilestone.wav` to play|
-|`0`| Triggers `intensity.wav` to play|
-|`B`| Triggers `bell.wav` to play|
-|`N`| Triggers `ambulance.wav` to play|
+|*`Click`*|adds a new *healthy* Boid to the click location|
+|`;`|decreases the separation force between Boids <sup>1</sup>|
+|`P`|increases the separation force between Boids <sup>2</sup>|
+|`\`|clears the grid of all Boids<sup>3</sup>|
+|`E`|hides the counter|
+|`Q`|shows the counter|
+|`R`|artificially summons a *healthy* Boid|
+|`F`|artificially summons an *infected* Boid|
+|`T`|artificially summons a *recovered* Boid|
+|`G`|artificially summons a *dead* Boid|
+|`H`|artificially summons a *diagnosed* Boid|
+|`Y`|artificially summons a *paramedic* Boid|
+|`U`|artificially summons a *paranoid* Boid|
+
+###### **1**: can be used to simulate public gatherings.
+###### **2**: can be used to simulate social distancing.
+###### **3**: made to be a demonstration/testing environment. (Note: there is always at least one infectant, and Boid spawn naturally).
+
+### **Music and Sounds**
+| Key/Button | Action |
+|:---:|:---:|
+|`/`| stops the main music (`plague.wav`)|
+|`.`| restarts the main music <sup>1</sup> (`plague.wav`)|
+|`W`|turns off sound effects listed below|
+|`1`|triggers `newpatient.wav` to play|
+|`2`| triggers `recovery.wav` to play|
+|`4`| triggers `death.wav` to play|
+|`3`| triggers `immunitylost.wav` to play|
+|`5`| triggers `diagnosis.wav` to play|
+|`6`| triggers `paranoia.wav` to play|
+|`7`| triggers `paranoiaEnded.wav` to play|
+|`8`| triggers `treatment.wav` to play|
+|`9`| triggers `deathmilestone.wav` to play|
+|`0`| triggers `intensity.wav` to play|
+|`B`| triggers `bell.wav` to play|
+|`N`| triggers `ambulance.wav` to play|
 
 
 ###### **1**: *only do this if you have turned off the music already, otherwise there will be two tracks playing simultaneously*
 
-`plague.wav` goes off when the simulation initiates or when the  ` . ` key is pushed.
+### **Sound Meanings**
 
-`newpatient.wav` goes off when a healthy Boid becomes *infected*.
+`plague.wav` plays when the simulation initiates or when the  ` . ` key is pushed.
 
-`recovery.wav` goes off when an *infected* Boid *recovers*.
+`newpatient.wav` plays when a healthy Boid becomes *infected*.
 
-`immunitylost.wav` goes off when a *recovered* Boid's immunity wears off, thus turning into a *healthy* boid.
+`recovery.wav` plays when an *infected* Boid *recovers*.
 
-`death.wav` goes off when an *infected* Boid dies.
+`immunitylost.wav` plays when a *recovered* Boid's immunity wears off, thus turning into a *healthy* boid.
 
-`diagnosis.wav` goes off when an *infected* Boid becomes diagnosed.
+`death.wav` plays when an *infected* Boid *dies*.
 
-### Miscellaneous
+`diagnosis.wav` plays when an *infected* Boid becomes *diagnosed*.
 
-* Pressing the `E` key hides the counts on the top.
-* Pressing the `Q` key undoes this action (makes it visible again).
+`paranoia.wav` plays when a *healthy* Boid becomes *paranoid*.
+
+`paranoiaEnded.wav` plays when a *paranoid* Boid becomes *infected*.
+
+`treatment.wav` plays when a *diagnosed* Boid receives paramedic treatment and becomes *recovered*.
+
+`deathmilestone.wav` plays whenever the death count reaches a multiple of 100.
+
+`intensity.wav` plays when more than 80% of the Boids are *infected*.
+
+`bell.wav` plays when a *paramedic* gets *infected*, or when all Boids on the grid are removed via the `\` key.
+
+`ambulance.wav`, `ambulance2.wav`, `ambulance3.wav` play whenever *paramedics* turn on their sirens to treat a *diagnosed* Boid.
