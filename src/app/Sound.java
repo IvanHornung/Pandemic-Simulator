@@ -1,7 +1,7 @@
 package app;
  
 
-//Adopted from StackOverflow
+//Adapted from StackOverflow
 
 import java.io.*;
 import java.net.URL;

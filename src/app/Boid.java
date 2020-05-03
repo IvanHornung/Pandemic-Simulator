@@ -32,7 +32,7 @@ public class Boid {
     double deathAngle = 0;
     static int mortalityRate = 14;
     static Color RECOVERED = new Color(101,194,255), DEAD = new Color(154, 74, 178), 
-                HEALTHY = Color.WHITE, INFECTED = Color.RED,  PARANOID = new Color(174,243,177);// DIAGNOSED = new Color(134, 0 , 0);
+                HEALTHY = Color.WHITE, INFECTED = Color.RED,  PARANOID = new Color(174,243,177);
     Color PARAMEDIC = Color.BLUE, DIAGNOSED = new Color(134, 0 , 0);
     double immunityLife;
     boolean isImmune = false, isParamedic = false;
@@ -70,7 +70,7 @@ public class Boid {
         }
         this.position = new Vector(mouseXPosition, mouseYPosition);
         double angle = Math.random()*360;
-        double radius = Math.random()*2+2; //2-4
+        double radius = Math.random()*2+2;
         this.velocity = new Vector((radius * Math.cos(angle)), (radius * Math.sin(angle)));
         this.acceleration = new Vector(0,0);
         if(BoidRunner.totalInfected == 1)
@@ -79,7 +79,7 @@ public class Boid {
     public Boid(boolean addedParamedic) {
         this.position = new Vector((int)(BoidRunner.WIDTH), (int)(BoidRunner.HEIGHT));
         double angle = Math.random()*360;
-        double radius = Math.random()*2+2; //2-4
+        double radius = Math.random()*2+2;
         this.velocity = new Vector((radius * Math.cos(angle)), (radius * Math.sin(angle)));
         this.acceleration = new Vector(0,0);
         if(addedParamedic) {
@@ -93,16 +93,16 @@ public class Boid {
         int perceptionRadius = (int)(alignmentPerceptionRadius);
         int total = 0;
         Vector steering = new Vector(0,0);
-        //!Part 2: Lifespans
+        //Part 2: Lifespans
         if(this.hasDisease && !this.dead && !this.isImmune) {
             lifeSpan--;
             if(lifeSpan <= 0) {
                 if((int)(Math.random()*100) < mortalityRate) {
-                    this.dead = true; //!Death
+                    this.dead = true; //Death
                     BoidRunner.updateDead();
                     this.healthStatus = DEAD;
                 } else {
-                    this.hasDisease = false; //!Recovery
+                    this.hasDisease = false; //Recovery
                     this.isImmune = true;
                     if(this.diagnosed) {
                         patient = null;
@@ -112,7 +112,7 @@ public class Boid {
                     this.healthStatus = RECOVERED;
                     this.immunity = this.immunityCap * (Math.random()*50+100);
                     this.immunityCap = this.immunity;
-                    this.immunityLife = initialLifeSpan*(6*(Math.random()*0.8+0.5)); //12*..
+                    this.immunityLife = initialLifeSpan*(6*(Math.random()*0.8+0.5));
                     if(this.diagnosed) {
                         this.diagnosed = false;
                         if(this == patient) {
@@ -123,7 +123,7 @@ public class Boid {
                     }
                 }
             }
-        } else if(this.isImmune) { //!Immunity loss
+        } else if(this.isImmune) { //Immunity loss
             this.immunityLife--;
             if(this.immunityLife < 0) {
                 this.isImmune = false;
@@ -134,10 +134,10 @@ public class Boid {
                 this.lifeSpan = this.initialLifeSpan;
                 new Sound("immunitylost.wav");
             }
-        } //!Alignment
+        } //Alignment
         if(!this.isParamedic || (this.isParamedic && !lockedOn)) 
         for(int i = 0; i < flock.size(); i++) {
-            if(this.isParamedic && flock.get(i).diagnosed) { //!Lock on
+            if(this.isParamedic && flock.get(i).diagnosed) { //Lock on
                 patient = flock.get(i);
                 lockedOn = true;
                 if(siren==null)
@@ -255,7 +255,7 @@ public class Boid {
                 Vector difference = new Vector(this.position.xvalue, this.position.yvalue);
                 difference.subtract(boid.position);
                 if(dist == 0.0) dist += 0.001;
-                difference.divide(dist*dist); //or *1/x; inverselly proportional
+                difference.divide(dist*dist);
                 if((boid.dead || (boid.diagnosed && !this.isParamedic) || this.healthStatus == PARANOID || (boid.isParamedic && lockedOn)) && !this.isParamedic){
                     difference.multiply(Math.random()*5+((boid.isParamedic && lockedOn)?80:20));
                 } if(this.isParamedic && boid.isParamedic && lockedOn 

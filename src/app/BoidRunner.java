@@ -49,7 +49,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         }
     }
 
-    boolean intensityPlayed = false, milestonePlayed = false;// decremented = false;
+    boolean intensityPlayed = false, milestonePlayed = false;
 
     public void run() {
         while(true) {
@@ -259,19 +259,19 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
     static ArrayList<Boid> addedBoids = new ArrayList<>();
 
     public void keyPressed( KeyEvent event ) {
-        //!General
+        //General
         if(event.getKeyCode() == KeyEvent.VK_P)
             Boid.incrementSeparationMaxForce();
         else if(event.getKeyCode() == KeyEvent.VK_SEMICOLON)
             Boid.decrementSeparationMaxForce();
-        //!Toggles
+        //Toggles
         else if(event.getKeyCode() == KeyEvent.VK_Q)
             toggleCounts(true);
         else if(event.getKeyCode() == KeyEvent.VK_E)
             toggleCounts(false);
         else if(event.getKeyCode() == KeyEvent.VK_W)
             Sound.tickOff = !Sound.tickOff;
-        //!Sounds
+        //Sounds
         //Decorative
         else if(event.getKeyCode() == KeyEvent.VK_B)
             new Sound("bell.wav");
@@ -302,7 +302,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
             new Sound("deathmilestone.wav");
         else if(event.getKeyCode() == KeyEvent.VK_0)
             new Sound("intensity.wav");
-        //!Demonstations
+        //Demonstations
         else if(event.getKeyCode() == KeyEvent.VK_BACK_SLASH) { //Clear grid
             new Sound("bell.wav");
             clearGrid = true;
