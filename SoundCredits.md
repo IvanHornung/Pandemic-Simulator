@@ -5,7 +5,7 @@
 Link to download source: https://www.youtube.com/watch?v=zfAGGQ9a_Ko
 
 * `plague.wav`
-## **Sound effects:** zaplsplat.com
+## **Sound effects:** zapsplat.com
 * `ambulance.wav`
 * `ambulance2.wav`
 * `bell.wav`
