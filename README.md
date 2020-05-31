@@ -1,5 +1,4 @@
 
->Comments/explanations to the source code to be released soon.
 
 <img src="https://media.giphy.com/media/j2jrhbTLQfdd3wjJGG/giphy.gif" height="432" width="800">
 
@@ -22,6 +21,8 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         public static final int BOIDCOUNT = 1200; //CHANGE THIS VALUE
 
 ```
+
+>Comments/explanations to the source code to be released soon.
 
 - - -
 ## Boids
