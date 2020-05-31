@@ -192,7 +192,7 @@ public class Boid {
                         this.hasDisease = false; //!Paramedic Curing
                         this.isImmune = true;
                         this.diagnosed = false;
-                        siren.stopSong();
+                        if(siren!=null) siren.stopSong();
                         siren = null;
                         new Sound("treatment.wav");
                         this.healthStatus = RECOVERED;
