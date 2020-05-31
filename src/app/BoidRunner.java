@@ -32,11 +32,12 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         this.addMouseListener(this);
 
         createLabels();
+        toggleCounts(false);
 
         for(int i = 0; i < BOIDCOUNT; i++)
             flock.add(new Boid());
 
-        music = new Sound("plague.wav");
+        //music = new Sound("plague.wav");
     }
 
     @Override
@@ -52,6 +53,9 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
     boolean intensityPlayed = false, milestonePlayed = false;
 
     public void run() {
+        long start = System.currentTimeMillis();
+        long lastIncrease = 0;
+        long lastSpeedup = 0;
         while(true) {
             int toAdd = 0;
             totalInfected = 0; healthyCount = 0; recoveryCount = 0; visiblyDead = 0; diagnosedCount = 0; paramedicCount = 0; paranoidCount = 0;
@@ -59,7 +63,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                 flock.get(i).edges();
                 flock.get(i).flock(flock);
                 flock.get(i).update();
-                if(flock.get(i).isParamedic)
+                /*if(flock.get(i).isParamedic)
                     paramedicCount++;
                 else if(flock.get(i).healthStatus == Boid.HEALTHY)
                     healthyCount++;
@@ -72,12 +76,12 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                 else if(flock.get(i).healthStatus == Boid.PARANOID)
                     paranoidCount++;
                 else
-                    visiblyDead++;
+                    visiblyDead++;*/
                 if(flock.get(i).dead && ((int)(Math.random()*(totalInfected*600+((totalInfected == 0)?1:0))) <= visiblyDead)) {
                     flock.remove(i);
                     i--;
                     //toAdd++;
-                } else if(flock.get(i).isParamedic && totalInfected <= flock.size()*0.25 && (int)(Math.random()*10000*(flock.size()-totalInfected)) == 0) {
+                } /*else if(flock.get(i).isParamedic && totalInfected <= flock.size()*0.25 && (int)(Math.random()*10000*(flock.size()-totalInfected)) == 0) {
                     flock.remove(i);
                     i--;
                     //toAdd++;
@@ -108,7 +112,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                         (int)(Math.random()*totalInfected*200+((totalInfected == 0)?1:0)) == 0 ) {
                     flock.get(i).healthStatus = Boid.HEALTHY;
                     new Sound("paranoiaEnded.wav");
-                }
+                }*/
             }
             if(clearGrid) {
                 for(int i = 0; i < flock.size(); i++) {
@@ -124,14 +128,14 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                     i--;
                 }
             }
-            if(paramedicCount <= 2 && diagnosedCount != 0) {
-                flock.add(new Boid(true));
-                new Sound("ambulance.wav");
-            }
+            //if(paramedicCount <= 2 && diagnosedCount != 0) {
+            //    flock.add(new Boid(true));
+            //    new Sound("ambulance.wav");
+            //}
             if(!intensityPlayed && (flock.size()+1)%100 == 0) 
                 intensityPlayed = true;
-            if(totalInfected == 0)
-                flock.add(new Boid((int)(Math.random()*WIDTH), (int)(Math.random()*HEIGHT), true));
+            //if(totalInfected == 0)
+            //    flock.add(new Boid((int)(Math.random()*WIDTH), (int)(Math.random()*HEIGHT), true));
             else if(totalInfected >= (int)(flock.size()*0.8) && !intensityPlayed) {
                 new Sound("intensity.wav");
                 intensityPlayed = !intensityPlayed;
@@ -154,12 +158,42 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                 addedNewBoid = false;
             }
             this.repaint();
+
+            ////////////////////////////////////////////////////////////////////////////////////////////!NPFL
+            if(timeElapse==0) {
+            } else if(timeElapse >= 5000 && !speedDecreased) {
+                Boid.maxSpeed = 0.05;
+                speedDecreased = true;
+            }
+             else if(timeElapse>=62190 && Boid.maxSpeed < 1 && timeElapse - lastSpeedup > 100){
+                Boid.maxSpeed += 0.05;
+                lastSpeedup = timeElapse;
+            } if(timeElapse>=62190 && !secondStamp) {
+                if(Boid.size < 2 && timeElapse - lastIncrease > 60) {
+                    lastIncrease = timeElapse;
+                    Boid.size += 0.01;
+                }
+                if(flock.size() < 600) {
+                    Boid random = flock.get((int)(Math.random()*flock.size()));
+                    flock.add(new Boid((int)random.position.xvalue,(int)random.position.yvalue, false));
+                } else if(Boid.size >= 2 && flock.size() >= 600) {
+                    secondStamp = true;
+                }
+            } if(timeElapse >= 87000 && !thirdStamp) {
+                for(int i=0;i<10;i++)flock.add(new Boid((int)WIDTH/2,(int)HEIGHT/2-100, true));
+                thirdStamp = true;
+            }
             try {
                 Thread.sleep(10);
             } catch( InterruptedException ex ){}
+            timeElapse = (System.currentTimeMillis() - start)+55000;
         }
-    }
-
+    }   
+    
+    boolean speedDecreased = false;
+    boolean secondStamp = false, thirdStamp = false;
+    static long timeElapse = 0;
+    
     void createLabels() {
         //Healthy
         healthyDisplay = new JLabel("Healthy: "+ healthyCount);
@@ -178,35 +212,36 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         infectedDisplay.setVisible(true);
         infectedDisplay.setLocation((int)WIDTH/2, 200);
         //Recovered
-        recoveredDisplay = new JLabel(" Recovered: "+ criticalCount);
+        recoveredDisplay = new JLabel(" Total Count: "+ flock.size());
         this.setLayout(new FlowLayout());
         this.add(recoveredDisplay);
         recoveredDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
-        recoveredDisplay.setForeground(Boid.RECOVERED);
+        recoveredDisplay.setForeground(Color.WHITE);
         recoveredDisplay.setVisible(true);
         recoveredDisplay.setLocation((int)WIDTH/2+400, 200);
         //Death
-        deathDisplay = new JLabel(" Dead: "+ deathCount);
+        deathDisplay = new JLabel(" Time elapse:: "+ timeElapse);
         this.setLayout(new FlowLayout());
         this.add(deathDisplay);
         deathDisplay.setFont(new Font("Courier New", Font.PLAIN, 20));
         deathDisplay.setForeground(Boid.DEAD);
         deathDisplay.setVisible(true);
         deathDisplay.setLocation((int)WIDTH/2+200, 300);
+
     }
 
     static void toggleCounts(boolean setting) {
         healthyDisplay.setVisible(setting);
         infectedDisplay.setVisible(setting);
-        recoveredDisplay.setVisible(setting);
-        deathDisplay.setVisible(setting);
+        //recoveredDisplay.setVisible(setting);
+        //deathDisplay.setVisible(setting);
     }
 
     static void updateValues() {
         healthyDisplay.setText("Healthy: " + healthyCount);
         infectedDisplay.setText(" Infected: " + totalInfected);
-        recoveredDisplay.setText(" Recovered: " + recoveryCount);
-        deathDisplay.setText(" Dead: " + deathCount);
+        recoveredDisplay.setText(" Total: " + flock.size());
+        deathDisplay.setText(" Time elapse: " + timeElapse);
     }
 
     static void updateHealthy() {
@@ -234,7 +269,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         deathCount++;
         totalInfected--;
         infectedDisplay.setText(" Infected: " + totalInfected);
-        deathDisplay.setText(" Dead: " + deathCount);
+        deathDisplay.setText(" Time ELAPSE: " + timeElapse);
         new Sound("death.wav");
     }
 
@@ -283,9 +318,9 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
             music = new Sound("plague.wav");
         //Demonstrative
         else if(event.getKeyCode() == KeyEvent.VK_1)
-            new Sound("newpatient.wav");
+            Boid.decrementMaxSpeed();
         else if(event.getKeyCode() == KeyEvent.VK_2)
-            new Sound("recovery.wav");
+            Boid.incrementMaxSpeed();
         else if(event.getKeyCode() == KeyEvent.VK_3)
             new Sound("immunitylost.wav");
         else if(event.getKeyCode() == KeyEvent.VK_4)
@@ -319,7 +354,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
             new Sound("recovery.wav");
             Boid recoveredBoid = new Boid((int)((int)((Math.random())*WIDTH)),(int)((Math.random())*HEIGHT), false);
             recoveredBoid.isImmune = true;
-            recoveredBoid.healthStatus = Boid.RECOVERED;
+            //recoveredBoid.healthStatus = Boid.RECOVERED;
             recoveredBoid.immunity = recoveredBoid.immunityCap * (Math.random()*50+100);
             recoveredBoid.immunityCap = recoveredBoid.immunity;
             recoveredBoid.immunityLife = recoveredBoid.initialLifeSpan*(6*(Math.random()*0.8+0.5));
@@ -335,20 +370,6 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
         else if(event.getKeyCode() == KeyEvent.VK_Y) { //Add paramedic
             new Sound("recovery.wav");
             addedBoids.add(new Boid(true));
-        }
-        else if(event.getKeyCode() == KeyEvent.VK_H) { //Add diagnosed
-            new Sound("recovery.wav");
-            new Sound("diagnosis.wav");
-            Boid diagnosedBoid = new Boid((int)((Math.random())*WIDTH),(int)((Math.random())*HEIGHT), true);
-            diagnosedBoid.diagnosed = true;
-            diagnosedBoid.healthStatus = diagnosedBoid.DIAGNOSED;
-            addedBoids.add(diagnosedBoid);
-        }
-        else if(event.getKeyCode() == KeyEvent.VK_U) { //Add paranoid
-            new Sound("recovery.wav");
-            Boid paranoidBoid = new Boid((int)((Math.random())*WIDTH),(int)((Math.random())*HEIGHT), false);
-            paranoidBoid.healthStatus = Boid.PARANOID;
-            addedBoids.add(paranoidBoid);
         }
 
     }
