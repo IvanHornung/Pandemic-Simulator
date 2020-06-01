@@ -191,9 +191,9 @@ public class Boid {
         }
         if(total > 0) {
             steering.divide((double)total);
-            steering.setMagnitude(((total > 30) ? separationMaxSpeed*2 :separationMaxSpeed));
+            steering.setMagnitude(((total > 40) ? separationMaxSpeed :separationMaxSpeed));
             steering.subtract(this.velocity);
-            steering.setMagnitude(((total > 30) ? separationMaxForce*2 :separationMaxForce));
+            steering.setMagnitude(((total > 40) ? separationMaxForce*1.5 :separationMaxForce));
         }
         return steering;
     }
@@ -300,7 +300,7 @@ public class Boid {
     static double cohesionPerceptionRadius = 100;
     static double separationPerceptionRadius = 100;
     static double separationMaxSpeed = maxSpeed;
-    static double separationMaxForce = maxForce;
+    static double separationMaxForce = 0.175;
     
     static void decrementMaxSpeed() { Boid.maxSpeed -= 0.05;}
     static void incrementMaxSpeed() { Boid.maxSpeed += 0.05;}

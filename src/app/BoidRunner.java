@@ -8,7 +8,7 @@ import java.awt.event.*;
 public class BoidRunner extends JPanel implements KeyListener, MouseListener, MouseMotionListener  {
     private static final long serialVersionUID = -8716187417647724411L;
     
-    public static final int BOIDCOUNT = 1200; //*Adjust this value to match your computer's optimal processing
+    public static final int BOIDCOUNT = 100; //*Adjust this value to match your computer's optimal processing
     
     public static final int WIDTH = 1920;
     public static final int HEIGHT = 1080;
@@ -165,7 +165,7 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                 Boid.maxSpeed = 0.05;
                 speedDecreased = true;
             }
-             else if(timeElapse>=62190 && Boid.maxSpeed < 1 && timeElapse - lastSpeedup > 100){
+            else if(timeElapse>=62190 && Boid.maxSpeed < 1 && timeElapse - lastSpeedup > 100){
                 Boid.maxSpeed += 0.05;
                 lastSpeedup = timeElapse;
             } if(timeElapse>=62190 && !secondStamp) {
@@ -173,20 +173,23 @@ public class BoidRunner extends JPanel implements KeyListener, MouseListener, Mo
                     lastIncrease = timeElapse;
                     Boid.size += 0.01;
                 }
-                if(flock.size() < 600) {
+                if(flock.size() < 800) {
                     Boid random = flock.get((int)(Math.random()*flock.size()));
                     flock.add(new Boid((int)random.position.xvalue,(int)random.position.yvalue, false));
-                } else if(Boid.size >= 2 && flock.size() >= 600) {
+                } else if(Boid.size >= 2 && flock.size() >= 800) {
                     secondStamp = true;
                 }
             } if(timeElapse >= 87000 && !thirdStamp) {
-                for(int i=0;i<10;i++)flock.add(new Boid((int)WIDTH/2,(int)HEIGHT/2-100, true));
-                thirdStamp = true;
+                for(int i=0;i<3;i++){
+                    Boid random = flock.get((int)(Math.random()*flock.size()));
+                    flock.add(new Boid((int)random.position.xvalue,(int)random.position.yvalue, true));
+
+                }thirdStamp = true;
             }
             try {
                 Thread.sleep(10);
             } catch( InterruptedException ex ){}
-            timeElapse = (System.currentTimeMillis() - start)+55000;
+            timeElapse = (System.currentTimeMillis() - start);
         }
     }   
     
