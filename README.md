@@ -6,8 +6,11 @@
 
 # Pandemic Simulator
 ##### by Ivan Hornung
-###### A student at Los Gatos High School
 * * *
+#### Featured in Austrian government-funded art festival "No-Place Like The Future"
+[![Click to see the short film](https://i.imgur.com/W3sRFz4.png)](https://drive.google.com/file/d/1xjceGbxZhGegTAAyKKwx7gQJM_AOgQ1y/view?usp=sharing)
+[*Click to see the short film*](https://drive.google.com/file/d/1xjceGbxZhGegTAAyKKwx7gQJM_AOgQ1y/view?usp=sharing)
+
 ## About
 
 With COVID-19 terrorizing the world, I decided to create a simulative environment that would demonstrate coronavirus-like conditions and traits. This simulator implements artificial life creatures, Boids, to realistically simulate disease spread. 
